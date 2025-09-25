@@ -221,5 +221,7 @@ I don't know about you, but for all the talk JS gets about being a beginner-frie
 
 ## What are the alternatives?
 That sure was a lot of talk, but what about action, what can I use if not the "battle-tested" frameworks of the modern age?
-Well, there ARE options, but I'll be the first to admit that they're a bit *rough* around the edges, WASM or WebAssembly is the core technology that will allow for essentially any application made in a language that can be compiled with an LLVM backend to run on the browser, as if it was a native app, this means, Zig, C, Rust, C#, and even Odin can produce fully featured web applications with as native a rendering as you can get, that is genuinely exciting, because, let's face it, **THE WEB IS THE UNIVERSAL VIRTUAL MACHINE**
+Well, there ARE options, but I'll be the first to admit that they're a bit *rough* around the edges (more on this later), WASM or WebAssembly is the core technology that will allow for essentially any application made in a language that can be compiled with an LLVM backend to run on the browser, as if it was a native app, this means, Zig, C, Rust, C#, and even Odin can produce fully featured web applications with as native a rendering as you can get, that is genuinely exciting, because, let's face it, **THE WEB IS THE UNIVERSAL VIRTUAL MACHINE** we need to come to terms with this, no one is wasting precious hard drive space on whatever apps they might want to get, so your only way, as a business or product to get people to try your app is to have as frictionless a process for users to get their hands on it, and the web ended up being the dominant platform for this.
+
+## How to build the BETTER web
 
