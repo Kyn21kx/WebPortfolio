@@ -33,7 +33,7 @@ That is not (entirely) true, there is a limit to how many wheels I'm personally 
   - *You want a frontend? Javascript! How else are you gonna write React?*
   - *Need a backend? Javascript! Node will take care of the heavy lifting*
   - *Desktop apps? Javascript! Let's just package **a whole browser** with that bad boy and you'll be right at home with the same UI libraries*
-  - *Embedded systems? Javascript! Let's just package **a whole browser** with that bad boy and you'll be right at home with the same UI libraries*
+  - *Embedded systems? BELIEVE IT OR NOT, ALSO JAVASCRIPT!!!*
 
 it was fine as a scripting language, it could've stayed a language used to move / delete and create elements in the DOM, and every codebase could have their own little declarative UI library that is specific to their use case, "but duude, that would be soooo complicated, imagine writing every single UI component yourself"... It really isn't that hard, look, here's a button:
 
@@ -221,4 +221,5 @@ I don't know about you, but for all the talk JS gets about being a beginner-frie
 
 ## What are the alternatives?
 That sure was a lot of talk, but what about action, what can I use if not the "battle-tested" frameworks of the modern age?
+Well, there ARE options, but I'll be the first to admit that they're a bit *rough* around the edges, WASM or WebAssembly is the core technology that will allow for essentially any application made in a language that can be compiled with an LLVM backend to run on the browser, as if it was a native app, this means, Zig, C, Rust, C#, and even Odin can produce fully featured web applications with as native a rendering as you can get, that is genuinely exciting, because, let's face it, **THE WEB IS THE UNIVERSAL VIRTUAL MACHINE**
 
