@@ -35,7 +35,8 @@ That is not (entirely) true, there is a limit to how many wheels I'm personally 
   - *Desktop apps? Javascript! Let's just package **a whole browser** with that bad boy and you'll be right at home with the same UI libraries*
   - *Embedded systems? BELIEVE IT OR NOT, ALSO JAVASCRIPT!!!*
 
-it was fine as a scripting language, it could've stayed a language used to move / delete and create elements in the DOM, and every codebase could have their own little declarative UI library that is specific to their use case, "but duude, that would be soooo complicated, imagine writing every single UI component yourself"... It really isn't that hard, look, here's a button:
+
+it was fine as a scripting language, meant for simple DOM manipulation. That should've been it, another language could've emerged and solved JS's issues, but, we decided to grab the spoon glue together a few spikes at the end and called it a fork, dragging along layers of complex frameworks. Could we simplify this paradigm without switching languages? Absolutely, imagine each codebase with its own lightweight, declarative UI library, tailored to its needs, something that you learn in one or two days along with your coworkers and banging your head against the code. From my experience there exists this strange attitude towards doing things that way, and it's almost always along the lines of: “Duude, writing every UI component from scratch?? That’s way too hard!” But it’s not. Custom libraries can be lean and intuitive, cutting out the bloat of modern frameworks. I’m not saying this is the ultimate fix, far from it. It’s just a step toward ditching overengineered abstractions for something more purposeful and self-contained. Here’s a quick example to prove it’s doable: a simple button, built without the usual framework overhead.
 
 ```ts
 
@@ -155,19 +156,23 @@ root.appendChild(button);
 </script>
 <br/>
 
-This is a relatively easy and straightforward way of avoiding all the usual bloat that comes from developing user interfaces in the web platforms, I would never advocate for any modern UI web framework, and I think the code presented here is a better solution for many reasons, not the least of which is the elimination of dependencies, I find the fact that we need someone else's code to do the same thing we can do without it just with a completely new and overcomplicated syntax and set of rules appalling, even more considering the serious security concerns that these packages imply (at the time of writing this, there have been 3 separate consecutive supply chain attacks to npm packages within THE SAME WEEK).
-That being said, this is only a baind-aid solution, and we need a completely different one... Let's first analyze the problems with the current approach:
 
-There is more boilerplate involved, we need to keep a reference to the created button and create a function:
+The button example shows a simpler way to build web UIs, straightforward, no bloat, just pure JavaScript manipulating the DOM (like god intended), I'd take this over modern web frameworks any day if not simply because it cuts all the dependency hell that we are forced to live in, relying on someone else's code to do this (frankly) very simple stuff seems like a red flag, specially when the trade off for this is potential security concerns (at the time of writing this, there have been 3 separate consecutive supply chain attacks to npm packages within THE SAME WEEK).
+
+By writing your own declarative components, you cut the middleman and reduce security risks. It is absolutely not the perfect solution, it’s a step in the right direction. Let’s break down why it’s not enough and explore a better paradigm: immediate mode UIs.
+
+The problem with our button approach is that there is more boilerplate involved, we need to keep a reference to the created button and create a function to manually update its values:
 
 ```ts
+// This becomes our state tracking function, which I'll admit, can be hard to keep track of
 function updateButton(button: HTMLElement, buttonArgs: ButtonArgs) {
   button.style.backgroundColor = buttonArgs.backgroundColor;
   button.style.borderRadius = `${buttonArgs.borderRadiusPx}px`;
   button.style.color = buttonArgs.textColor;
 }
 ```
-This is because the HTML -> JS UI interaction pipeline is a [**retained mode** UI](https://learn.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode), and I think that **THAT** is the reason so many frontend frameworks seem so appealing to JS developers, as Reactive frameworks will try to *emulate* the feeling of [**immediate mode** UI](https://learn.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode), but they need to jump through the hoops and limitations of the stablished HTML and JS interfaces to make it usable; This is exactly how you get things like `useState`, `useEffect` and the infamous re-renders, which are known to be slow, but here's the thing... they're only slow in this particular context, re-rendering everything is usually how graphical software is written, this is obvious for anyone who has ever done game development at some point in their lives, your engine/framework gives you a function that runs every single frame, and you recalculate your game's state that frame, then the engine renders the result, in immediate mode, your UI is redrawn every frame, and every single variable is a state variable, it might sound counter intuitive, but this is actually a much more efficient approach to UIs than what HTML does on the background, because the rendering layer is no longer responsible of holding the state of your scene in memory, that becomes the responsibility of the application layer, and it's also much easier for the programmer in my humble opinion, would you rather write this?
+
+We then call this function every time you make a change to the `buttonData` variable... This is because the HTML -> JS UI interaction pipeline is a [**retained mode** UI](https://learn.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode), and I think that **THAT** is the reason so many frontend frameworks seem so appealing to JS developers, as Reactive frameworks will try to *emulate* the feeling of [**immediate mode** UI](https://learn.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode), but they need to jump through the hoops and limitations of the stablished HTML and JS interfaces to make it usable; This is exactly how you get things like `useState`, `useEffect` and the infamous re-renders, which are known to be slow, but here's the thing... they're only slow in this particular context, re-rendering everything is usually how graphical software is written, this is obvious for anyone who has ever done game development at some point in their lives, your engine/framework gives you a function that runs every single frame, and you recalculate your game's state that frame, then the engine renders the result, in immediate mode, your UI is redrawn every frame, and every single variable is a state variable, it might sound counter intuitive, but this is actually a much more efficient approach to UIs than what HTML does on the background, because the rendering layer is no longer responsible of holding the state of your scene in memory, that becomes the responsibility of the application layer, and it's also much easier for the programmer in my humble opinion, would you rather write this?
 
 ### Simulated immediate mode counter component in React
 ```ts
@@ -209,7 +214,7 @@ For the latter, you have to:
 - Understand if statements
 - Optionally understand string formatting
 
-I don't know about you, but for all the talk JS gets about being a beginner-friendly programming language, React is doing it a disservice, and all for the sake of trying to use JS to do something it was not designed for... THAT is my thesis for this article, the fact that we introduce a shit ton of totally new fabricated issues and we're willing to endure them before we even take a look at the alternatives we could be using instead.
+I don't know about you, but for all the talk JS gets about being a beginner-friendly programming language, React is doing it a disservice, and all for the sake of trying to use JS to do something it was not designed for... THAT is my thesis for this article, the fact that we introduce a shit ton of totally new issues and we're willing to endure them before we even take a look at the alternatives we could be using instead.
 
 <center>
   <h3>The industry's attitude towards Javascript</h3>
