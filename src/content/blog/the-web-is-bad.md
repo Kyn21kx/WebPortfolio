@@ -16,6 +16,20 @@ When I was a child, I was fascinated by the tech world because I did not know ho
 
 Talking with friends involved in web development I often end up mentioning how I'm not particularly fond of the current state of their industry, and quite frequently I'm met with the same line of reasoning, "but why is this bad", "it works fine dude", "you're just too tryhard", this usually happens after bringing up emergent alternative technology stacks like WebAssembly and how it is so cool that I can now write straight C code that compiles to an actual executable the web browser will run, and I guess the assumption is that I want everyone to reimplement every single website in C and dump JS in the trash.
 
+
+<center>
+  <div>
+    <img 
+      src="https://external-preview.redd.it/IAMB6TV2YcGBo67tBJGJLpE9T2HnPTR_acYEe4uJrG8.png?auto=webp&s=d8f1ca2c748425d0c6a81f5de20c9297739e56a1" 
+      alt="Rust rewrite"
+      style="max-width: 50vw; max-height: 50vh; aspect-ratio: 1 / 1; object-fit: contain;"
+    />
+    <blockquote> Or even better, just rewrite it in Rust! </blockquote>
+  </div>
+</center>
+
+
+
 That is not (entirely) true, there is a limit to how many wheels I'm personally willing to reinvent just to show a simple website, however, I am still critical of the chokehold under which JS has the whole industry on, it is truly a monopoly out there when it comes to picking how you're going to build your apps, and it affects not only the developers (with an overflow of the job market and stale career growth), but the end user as well with every single site looking exactly like all the others, and not to mention the performance implications of both the language and poor engineering decisions... "Oops, sorry this took 10 seconds to load, we tested this on our intern's MacBook Pro M4 Ultra, you should really reconsider using our product if you don't have the minimum requirements".
 
 <center>
@@ -172,7 +186,37 @@ function updateButton(button: HTMLElement, buttonArgs: ButtonArgs) {
 }
 ```
 
-We then call this function every time you make a change to the `buttonData` variable... This is because the HTML -> JS UI interaction pipeline is a [**retained mode** UI](https://learn.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode), and I think that **THAT** is the reason so many frontend frameworks seem so appealing to JS developers, as Reactive frameworks will try to *emulate* the feeling of [**immediate mode** UI](https://learn.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode), but they need to jump through the hoops and limitations of the stablished HTML and JS interfaces to make it usable; This is exactly how you get things like `useState`, `useEffect` and the infamous re-renders, which are known to be slow, but here's the thing... they're only slow in this particular context, re-rendering everything is usually how graphical software is written, this is obvious for anyone who has ever done game development at some point in their lives, your engine/framework gives you a function that runs every single frame, and you recalculate your game's state that frame, then the engine renders the result, in immediate mode, your UI is redrawn every frame, and every single variable is a state variable, it might sound counter intuitive, but this is actually a much more efficient approach to UIs than what HTML does on the background, because the rendering layer is no longer responsible of holding the state of your scene in memory, that becomes the responsibility of the application layer, and it's also much easier for the programmer in my humble opinion, would you rather write this?
+We then call this function every time you make a change to the `buttonData` variable... This is because the HTML -> JS UI interaction pipeline is a [**retained mode** UI](https://learn.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode), and I think that **THAT** is the reason so many frontend frameworks seem so appealing to JS developers, as Reactive frameworks will try to *emulate* the feeling of [**immediate mode** UI](https://learn.microsoft.com/en-us/windows/win32/learnwin32/retained-mode-versus-immediate-mode), but they need to jump through the hoops and limitations of the stablished HTML and JS interfaces to make it usable.
+
+
+<div style="display:flex; gap:2vw; justify-content:center; align-items:flex-start; flex-wrap:nowrap;">
+  <figure style="display:flex; flex-direction:column; align-items:center; width:50vw; max-width:50vw; margin:0; box-sizing:border-box; height:auto;">
+    <img
+      src="https://learn.microsoft.com/en-us/windows/win32/learnwin32/images/graphics06.png"
+      alt="Retained mode UI"
+      style="width:100%; height:auto; max-height:50vh; aspect-ratio:1 / 1; object-fit:contain; display:block;"
+    />
+    <blockquote style="margin:0; margin-top:0.5rem; width:100%; text-align:left; padding:0.5rem 0; box-sizing:border-box; overflow:visible; white-space:normal; word-break:break-word; hyphens:auto; line-height:1.5;">
+      Retained mode, scene state is kept in memory and it's the "drawing" layer's responsibility to keep track of every component's change
+    </blockquote>
+  </figure>
+
+  <figure style="display:flex; flex-direction:column; align-items:center; width:50vw; max-width:50vw; margin:0; box-sizing:border-box; height:auto;">
+    <img
+      src="https://learn.microsoft.com/en-us/windows/win32/learnwin32/images/graphics07.png"
+      alt="Immediate mode UI"
+      style="width:100%; height:auto; max-height:50vh; aspect-ratio:1 / 1; object-fit:contain; display:block;"
+    />
+    <blockquote style="margin:0; margin-top:0.5rem; width:100%; text-align:left; padding:0.5rem 0; box-sizing:border-box; overflow:visible; white-space:normal; word-break:break-word; hyphens:auto; line-height:1.5;">
+      Immediate mode, scene state is never kept in memory and the state's responsibility falls to the "application" layer
+    </blockquote>
+  </figure>
+</div>
+<br/>
+<br/>
+
+
+This is exactly how you get things like `useState`, `useEffect` and the infamous re-renders, which are known to be slow, but here's the thing... they're only slow in this particular context, re-rendering everything is usually how graphical software is written, this is obvious for anyone who has ever done game development at some point in their lives, your engine/framework gives you a function that runs every single frame, and you recalculate your game's state that frame, then the engine renders the result, in immediate mode, your UI is redrawn every frame, and every single variable is a state variable, it might sound counter intuitive, but this is actually a much more efficient approach to UIs than what HTML does on the background, because the rendering layer is no longer responsible of holding the state of your scene in memory, that becomes the responsibility of the application layer, and it's also much easier for the programmer in my humble opinion, would you rather write this?
 
 ### Simulated immediate mode counter component in React
 ```ts
@@ -241,3 +285,20 @@ And let me tell you... you're **absolutely right**, don't get me wrong, I truly 
 On my implementation, I don't know why, but I couldn't get the mouse scroll to work as smoothly as I wanted it to, and the lack of documentation and certainly a lack of patience on my side lead to my decision of abandoning that idea perhaps a bit prematurely, I plan on trying that again, don't get me wrong, but, I JUST wanted to put my blog out there as quickly as possible, and this is a perfect reflection of the core issue at hand, companies don't want a new experimental and bold tech stack, they don't care about which language their landing page is written in, they care about shipping fast, and if sloppy carelessly crafted, dependency ridden and performance killing code will get them there faster, because of the larger work force pool they will absolutely choose that.
 
 But I won't shy away from showing what I tried to accomplish, here's the page I tried to make (this is all just C++ code, but Clay also has bindings for other languages, like Odin):
+
+
+![gif](https://i.postimg.cc/wvZgZWsY/Web-Site-gif.gif)
+
+Alright, it's not a lot, I'll admit it, but, without looking at the Clay documentation, purely off of the header file and my previous experience with UI libraries I was able to make:
+- Header
+- Buttons
+- Some simple animations
+- Flexbox layouts
+
+all in a modular/component-based architecture with true immediate mode UI rendering, and it was honestly pretty fun too, it was above all else a refreshing experience, and even though I left it quite incomplete, I still learned a lot from it, and most importantly **I DO SEE A PATH FORWARD FOR THIS APPROACH TO WEBDEV**
+
+## The ACTUAL issues with moving to WASM
+Let's face it, the web and its technologies are pretty much set in stone now, everyone knows a website is made up of HTML, JS and CSS, and we've built a lot of technologies and tools under this assumption, so there ARE genuine concerns when someone claims they're "just" gonna write it in WASM, let's dig into them...
+
+### Accessibility
+If we're relying on **RAW** pixel rendering for everything in our websites, then, a "blog" *such as this one* might actually suffer from that choice, since people tend to use voice readers to navigate through them in an easier manner, not to mention visually impaired people, as I said, we've built tooling around the assumptions we have of the web, and if all webistes suddenly changed to WASM without having this tooling in mind, someone out there is suddenly going to get completely cut off from the web due to the lack of support for new technologies from the same tools
