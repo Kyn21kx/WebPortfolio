@@ -301,4 +301,50 @@ all in a modular/component-based architecture with true immediate mode UI render
 Let's face it, the web and its technologies are pretty much set in stone now, everyone knows a website is made up of HTML, JS and CSS, and we've built a lot of technologies and tools under this assumption, so there ARE genuine concerns when someone claims they're "just" gonna write it in WASM, let's dig into them...
 
 ### Accessibility
-If we're relying on **RAW** pixel rendering for everything in our websites, then, a "blog" *such as this one* might actually suffer from that choice, since people tend to use voice readers to navigate through them in an easier manner, not to mention visually impaired people, as I said, we've built tooling around the assumptions we have of the web, and if all webistes suddenly changed to WASM without having this tooling in mind, someone out there is suddenly going to get completely cut off from the web due to the lack of support for new technologies from the same tools
+If we're relying on **RAW** pixel rendering for everything in our websites, then, a "blog" *such as this one* might actually suffer from that choice, since people tend to use voice readers to navigate through them in an easier manner, not to mention visually impaired people, as I said, we've built tooling around the assumptions we have of the web, and if all webistes suddenly changed to WASM without having this tooling in mind, someone out there is suddenly going to get completely cut off from the web due to the lack of support for new technologies from the same tools; there might be a way to connect to the underlying reader / interactor API of the browser, but I am honestly not sure...
+
+This is by far the biggest hurdle to clear to properly adopt WASM as a viable technology for user-friendly web applications, I do think that the technology is very new and there are things that we can improve upon / standardize, this is why I mentioned no one is willing to change the current state of the web, because adapting new technologies means slowing down, and that's not something a profit-seeking company will want to do very often, as with many things in tech we have to rely in one of two things, either we get funding from a military-oriented application of these platforms, or we wait for a good samaritan to develop it and open source it to the world from the kindness of their heart. I am by no means someone qualified enough to set the next wave of web standards, but I believe pushing for the adoption of these new alternative approaches to webdev will yield innovation in the field from an industry that is desperately calling for it but being answered with a new JS meta-framework on a regular basis instead.
+
+## Conclusion... doing our part to build the new web
+
+We can all contribute a small thing from many different areas, on my end, the [visualizations]() on this very page are all written in lower level languages compiled with emscripten, up next here are some ideas off the top of my head:
+
+### For frontend developers
+
+If you're skilled in CSS, then you could focus on creating custom components for Nick Barker's Clay layout library, we're always going to be in need of spinners, progress bars, nice looking buttons, etc. distributing them should be extremely easy as a single header library. Clay is by design similar to a flexbox-based layout in CSS, here's a simple button component in C++
+
+```cpp
+
+using OnClickFunc_t = void(*)(Clay_ElementId elementId, Clay_PointerData pointerData, intptr_t userData);
+	
+struct ButtonArgs {
+	uint16_t fontSize = 24;
+	bool active = false;
+	OnClickFunc_t onClick = {};
+	intptr_t callbackArgs = 0;
+	uint16_t padding = 8;
+	Clay_Color bgIdleColor = ColorUtils::Transparent();
+	Clay_Color bgHoverColor = ColorUtils::Transparent();
+	Clay_Color fgIdleColor = ColorUtils::LightGray();
+	Clay_Color fgHoverColor = ColorUtils::White();
+
+};
+
+inline void RawButton(Clay_String buttonText, const ButtonArgs& args) {
+	CLAY({ .layout = { .padding = CLAY_PADDING_ALL(args.padding) }, .backgroundColor = Clay_Hovered() || args.active ?  args.bgHoverColor : args.bgIdleColor}) {
+        CLAY_TEXT(buttonText, CLAY_TEXT_CONFIG(TextUtils::Default(args.fontSize, Clay_Hovered() || args.active ? fgHoverColor : fgIdleColor)));
+        Clay_OnHover(args.onClick, args.callbackArgs);
+}
+
+```
+
+If you're feeling bold, you can absolutely implement your own UI layout library entirely from scratch!
+
+### For tool developers
+
+The development environment around native web applications is still young, so it's a perfect oportunity if you like to innovate around what we use to make our apps, text-to-speech readers, HTML renderers, wasm embedders, HTML shell templates, or, even contributing to emscripten are a few ways that I can think of of improving the state of our tools so far!
+
+### For Backend developers
+
+**STOP USING JAVASCRIPT ON THE SERVER.**
+
