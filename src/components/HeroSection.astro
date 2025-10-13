@@ -3,6 +3,23 @@ import '../styles/global.css';
 
 ---
 
+<style>
+  @media (max-width: 767.98px) {
+    .buttonContainer {
+      flex-direction: column;
+      align-items: stretch; 
+    }
+    .buttonContainer > * {
+      width: 100%;
+      margin-bottom: 1rem; 
+      margin-right: 0 !important; 
+    }
+    .buttonContainer > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+</style>
+
 <section class='darkBg py-5'>
   <div class='container text-white'>
     <div class='row'>
@@ -12,13 +29,13 @@ import '../styles/global.css';
         <p class='heroDescription mt-3'>
           Hello there! My name is Leónidas Neftalí, a software engineer with over 6 years of experience focused on the game development and graphics industry
         </p>
-        <div class='d-flex justify-content-start buttonContainer mt-5' style="">
+        <div class='d-flex justify-content-start buttonContainer mt-5'>
           <a
             class='btn btn-light rounded-pill px-4 py-2 fw-bold'
-            style='margin-right: 1.5rem;'>Projects</a>
+            >Projects</a>
           <button
             class='btn btn-light rounded-pill px-4 py-2 fw-bold'
-            style='margin-right: 1.5rem;'>Interactive Demos</button
+            >Interactive Demos</button
           >
           
           <button class='btn btn-outline-light rounded-pill px-5 py-2 fw-bold'>
