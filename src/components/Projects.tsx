@@ -86,6 +86,7 @@ const Projects = ({ projects = [] }) => {
               <p className="project-description">{project.description}</p>
               <a
                 href={project.slug}
+                target="_blank"
                 className="project-link"
               >
                 VIEW PROJECT
