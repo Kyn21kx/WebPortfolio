@@ -20,12 +20,24 @@ export enum Technologies {
   CSharp = "C#"
 }
 
-export interface Project {
+export type Project = {
   slug: string;
   thumbnail: string;
   title: string;
   description: string;
   tags: ProjectTags[];
   technologies: Technologies[];
+}
+
+export enum VideoTags {
+  Talk = "Talk",
+  Short = "Short"
+}
+
+export type Video = {
+  url: string;
+  thumbnail: string;
+  title: string;
+  tags: VideoTags[];
 }
 
