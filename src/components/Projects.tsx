@@ -54,7 +54,8 @@ const Projects = ({ projects = [] }) => {
     const isLeft = index % 2 === 0;
     
     return (
-      <div 
+      <div
+        id="projects"
         key={project.slug} 
         className={`project-item ${isLeft ? 'project-left' : 'project-right'}`}
       >
