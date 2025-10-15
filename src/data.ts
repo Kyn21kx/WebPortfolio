@@ -26,19 +26,19 @@ export const PROJECTS_DATA: Project[] = [
     technologies: [Technologies.CSharp, Technologies.Unity, Technologies.Proton]
   },
   {
-    slug: "https://github.com/Kyn21kx/Aspis.NET",
-    thumbnail: "https://i.postimg.cc/HnPn23Ck/Aspis.png",
-    title: "Aspis.NET",
-    description: "Aspis is a .NET framework for C# web API applications that aims to provide a simple yet powerful errors as values system to avoid having unexpected responses from your backend.",
-    tags: [ProjectTags.BackendDevelopment,ProjectTags.OpenSource],
-    technologies: [Technologies.DotnetCore, Technologies.CSharp]
-  },
-  {
     slug: "https://github.com/Kyn21kx/FuzzKill",
     thumbnail: "https://i.postimg.cc/ryWbCFbf/Fuzz-Kill-Idea-Logo-V2.png",
     title: "FuzzKill",
     description: "Fuzz Kill is an ALT+TAB replacement utility that lets you navigate through your computer's windows by searching them in plain text, thanks to a lightning fast fuzzy matching algorithm you can find any app at any time without having to search with your eyes like when manually tabbing",
     tags: [ProjectTags.OpenSource, ProjectTags.Desktop],
     technologies: [Technologies.CPP, Technologies.Raylib]
+  },
+  {
+    slug: "https://github.com/Kyn21kx/Aspis.NET",
+    thumbnail: "https://i.postimg.cc/HnPn23Ck/Aspis.png",
+    title: "Aspis.NET",
+    description: "Aspis is a .NET framework for C# web API applications that aims to provide a simple yet powerful errors as values system to avoid having unexpected responses from your backend.",
+    tags: [ProjectTags.BackendDevelopment,ProjectTags.OpenSource],
+    technologies: [Technologies.DotnetCore, Technologies.CSharp]
   },
 ];
