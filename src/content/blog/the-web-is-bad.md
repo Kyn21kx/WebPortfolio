@@ -1,9 +1,9 @@
 ---
 title: 'The web is bad but no one is willing to change it (yet)'
 date: 2025-09-17
-draft: true
+draft: false
 tags: ['opinion', 'web', 'js']
-# thumbnail: 'https://venturebeat.com/wp-content/uploads/2024/12/Vulkan-1.4-16by9.jpg?w=1024?w=1200&strip=all'
+thumbnail: 'https://static.virtubox.io/project/file/20250114-104300-8ltn-blog-134-01.jpg'
 slug: 'the-web-is-bad'
 author: 'Leónidas Neftalí González Campos'
 ---
