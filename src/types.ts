@@ -15,7 +15,7 @@ export enum Technologies {
   Vulkan = "Vulkan",
   Raylib = "Raylib",
   Godot = "Godot",
-  Proton = "Proton",
+  Photon = "Photon",
   Unity = "Unity3D",
   CSharp = "C#"
 }
