@@ -1,9 +1,9 @@
 ---
 title: 'The web is bad but no one is willing to change it (yet)'
 date: 2025-09-17
-draft: true
+draft: false
 tags: ['opinion', 'web', 'js']
-# thumbnail: 'https://venturebeat.com/wp-content/uploads/2024/12/Vulkan-1.4-16by9.jpg?w=1024?w=1200&strip=all'
+thumbnail: 'https://static.virtubox.io/project/file/20250114-104300-8ltn-blog-134-01.jpg'
 slug: 'the-web-is-bad'
 author: 'Leónidas Neftalí González Campos'
 ---
@@ -11,6 +11,25 @@ author: 'Leónidas Neftalí González Campos'
 ## A reflection on the current state of web technologies
 
 When I was a child, I was fascinated by the tech world because I did not know how anything worked, the internet seemed like a never ending fountain of knowledge that was carefully crafted by experts, now... well, I am still fascinated, but now it is at the fact that everything is still somehow standing with so many layers of poorly constructed software architecture and needless overcomplicated abstractions; so, how did we get here, is there **anything** we can possibly do to make the web better, and most importantly, what does *better* even mean?
+
+
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+## Table Of Contents
+
+   * [So, what exactly is **bad** about it?](#so-what-exactly-is-bad-about-it)
+      + [Simulated immediate mode counter component in React](#simulated-immediate-mode-counter-component-in-react)
+      + [True immediate mode counter in C++ (DearImGui)](#true-immediate-mode-counter-in-c-dearimgui)
+   * [What are the alternatives?](#what-are-the-alternatives)
+   * [How to build the BETTER web](#how-to-build-the-better-web)
+   * [The ACTUAL issues with moving to WASM](#the-actual-issues-with-moving-to-wasm)
+      + [Accessibility](#accessibility)
+   * [Conclusion... doing our part to build the new web](#conclusion-doing-our-part-to-build-the-new-web)
+      + [For frontend developers](#for-frontend-developers)
+      + [For tool developers](#for-tool-developers)
+      + [Finally, for Backend developers](#finally-for-backend-developers)
+
+<!-- TOC end -->
 
 ## So, what exactly is **bad** about it?
 
@@ -303,10 +322,20 @@ Let's face it, the web and its technologies are pretty much set in stone now, ev
 ### Accessibility
 If we're relying on **RAW** pixel rendering for everything in our websites, then, a "blog" *such as this one* might actually suffer from that choice, since people tend to use voice readers to navigate through them in an easier manner, not to mention visually impaired people, as I said, we've built tooling around the assumptions we have of the web, and if all webistes suddenly changed to WASM without having this tooling in mind, someone out there is suddenly going to get completely cut off from the web due to the lack of support for new technologies from the same tools; there might be a way to connect to the underlying reader / interactor API of the browser, but I am honestly not sure...
 
+<center>
+  <img 
+    src="https://www.whoisaccessible.com/wp-content/uploads/2023/02/web-accessibility-feauture.png" 
+    alt="Accesibility on the web"
+    style="max-width: 50vw; max-height: 50vh; aspect-ratio: 1 / 1; object-fit: contain;"
+  />
+</center>
+
+
 This is by far the biggest hurdle to clear to properly adopt WASM as a viable technology for user-friendly web applications, I do think that the technology is very new and there are things that we can improve upon / standardize, this is why I mentioned no one is willing to change the current state of the web, because adapting new technologies means slowing down, and that's not something a profit-seeking company will want to do very often, as with many things in tech we have to rely in one of two things, either we get funding from a military-oriented application of these platforms, or we wait for a good samaritan to develop it and open source it to the world from the kindness of their heart. I am by no means someone qualified enough to set the next wave of web standards, but I believe pushing for the adoption of these new alternative approaches to webdev will yield innovation in the field from an industry that is desperately calling for it but being answered with a new JS meta-framework on a regular basis instead.
 
 ## Conclusion... doing our part to build the new web
 
+The bottom line is this, if the tech isn't used, it won't be developed further, so, the more we build with it, the more likely it is for good stuff to come out of it, libraries, utilities, tools, and full blown products, and thus, all following apps will get easier and easier to make.
 We can all contribute a small thing from many different areas, on my end, the [visualizations]() on this very page are all written in lower level languages compiled with emscripten, up next here are some ideas off the top of my head:
 
 ### For frontend developers
@@ -344,7 +373,7 @@ If you're feeling bold, you can absolutely implement your own UI layout library 
 
 The development environment around native web applications is still young, so it's a perfect oportunity if you like to innovate around what we use to make our apps, text-to-speech readers, HTML renderers, wasm embedders, HTML shell templates, or, even contributing to emscripten are a few ways that I can think of of improving the state of our tools so far!
 
-### For Backend developers
+### Finally, for Backend developers
 
 **STOP USING JAVASCRIPT ON THE SERVER.**
 
