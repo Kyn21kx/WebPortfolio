@@ -115,6 +115,60 @@ This function teaches us to be careful of null or empty values, a concept that i
 
 Now, this isn't Go, so repeating `if (res == null) {}` over and over again can get really boring and tiresome really quickly, thankfully, C provides us with the tools to make it easier and adapt to these types of *"defensive patterns"* to either stop us dead in our tracks when something goes horribly wrong and the program can't continue any further, or even handle the error elegantly and ignore it.
 
+### Defensive runtime check (elegantly ignore/handle the errors)
+Let's start with the latter approach, we want to catch errors and respond to them elegantly at any point of our application, so even if something fails, it fails in a deterministic manner, and we can decide how to move forward / notify the user.
+
+This can be done with a simple if statement, just like we saw earlier, but, we're fancy, so we can create a few simple macros that will take care of this operation automatically, keeping our code clean, readable and procedural.
+
+> A Macro in C is a simple copy-paste replacement operation where you define a function-like term that will be expanded to the full contents at compile time. for example `#define PRINT_VECTOR(vec) printf("(%.2f, %.2f, %.2f)\n", vec.x, vec.y, vec.z)` defines a macro to print a 3D vector that when called like this `PRINT_VECTOR(playerPosition)`, the compiler will expand it to: `printf("(%.2f, %.2f, %.2f)\n", playerPosition.x, playerPosition.y, playerPosition.z)`
+
+```c
+#define ERR_COND_FAIL(condition, retval) \
+    if (!(condition)) {                  \
+        return;                          \
+    }
+
+#define ERR_COND_FAIL_V(condition, retval) \
+    if (!(condition)) {                    \
+        return retval;                     \
+    }
+
+#define ERR_COND_FAIL_MSG(condition, format, ...) \
+    if (!(condition)) {                           \
+        fprintf(stderr,                           \
+                "Condition failed at %s line %s! " fmtFormat, \
+                __FILE__, __LINE__, ##__VA_ARGS__);           \
+        return;                                   \
+    }
+
+#define ERR_COND_FAIL_MSG_V(condition, retval, format, ...) \
+    if (!(condition)) {                                     \
+        fprintf(stderr,                                     \
+                "Condition failed at %s line %s! " fmtFormat, \
+                __FILE__, __LINE__, ##__VA_ARGS__);           \
+        return retval;                                      \
+    }
+
+```
+
+Now, our code can look like this:
+```c
+#define MAX_LINE_LENGTH 256
+
+FILE *file = fopen("names.txt", "r");
+
+ERR_COND_FAIL_MSG(file != NULL, "Error opening file!");
+
+char line[MAX_LINE_LENGTH];
+while (fgets(line, MAX_LINE_LENGTH, file) != NULL) {
+    printf("%s", line);
+}
+
+fclose(file);
+```
+
+The error is still handled and the function is still easy to understand,
+
 ### Assertions
 
 Assertions are the first option I mentioned, something horrible that shouldn't ever happen just happened and our program SHOUL NOT continue execution because our assumptions about the state of the program are incorrect, so any code beyond that point cannot be reliably executed. This is an extremely useful tool in a development environment because it completely stops the program, and if you have a debugger attached it will automatically take you to the line where the assertion failed for you to debug right there and check what caused the state to be incorrect.
@@ -205,37 +259,3 @@ protected override void OnCreate() {
 
 ### Again, asserts are for DEBUG ONLY
 One important caveat is that asserts will be stripped out in release builds, so, be sure to NEVER check user side data with them, for that we use runtime fail checks, which are essentially the same as an assert but they either do an early return or send an error message straight to the user.
-
-This can be done with a simple if statement, just like we saw earlier, but, we're fancy, so we can create a few simple macros that will take care of this operation automatically, keeping our code clean, readable and procedural.
-
-> A Macro in C is a simple copy-paste replacement operation where you define a function-like term that will be expanded to the full contents at compile time. for example `#define PRINT_VECTOR(vec) printf("(%.2f, %.2f, %.2f)\n", vec.x, vec.y, vec.z)` defines a macro to print a 3D vector that when called like this `PRINT_VECTOR(playerPosition)`, the compiler will expand it to: `printf("(%.2f, %.2f, %.2f)\n", playerPosition.x, playerPosition.y, playerPosition.z)`
-
-```c
-#define ERR_COND_FAIL(condition, retval) \
-    if (!(condition)) {                  \
-        return;                          \
-    }
-
-#define ERR_COND_FAIL_V(condition, retval) \
-    if (!(condition)) {                    \
-        return retval;                     \
-    }
-
-#define ERR_COND_FAIL_MSG(condition, format, ...) \
-    if (!(condition)) {                           \
-        fprintf(stderr,                           \
-                "Condition failed at %s line %s! " fmtFormat, \
-                __FILE__, __LINE__, ##__VA_ARGS__);           \
-        return;                                   \
-    }
-
-#define ERR_COND_FAIL_MSG_V(condition, retval, format, ...) \
-    if (!(condition)) {                                     \
-        fprintf(stderr,                                     \
-                "Condition failed at %s line %s! " fmtFormat, \
-                __FILE__, __LINE__, ##__VA_ARGS__);           \
-        return retval;                                      \
-    }
-
-```
-

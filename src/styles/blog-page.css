@@ -145,34 +145,105 @@ a:hover::after {
   margin-top: 1rem;
 }
 
-/* Enhanced code blocks */
-.blog-page pre,
-.blog-page code {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(0, 255, 255, 0.2);
+/* Enhanced code blocks with a blue-ish theme */
+.blog-page pre {
+  background: #1c2a3a; /* Dark blue background */
+  border: 1px solid rgba(88, 166, 255, 0.3);
   border-radius: 8px;
   font-family: 'Fira Code', 'Consolas', monospace;
-}
-
-.blog-page pre {
   padding: 1.5rem;
   overflow-x: auto;
   margin: 1.5rem 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .blog-page code {
   padding: 0.2rem 0.4rem;
   font-size: 0.9em;
-  color: #0ff;
+  color: #88aaff;
+  background: rgba(88, 166, 255, 0.1);
+  border-radius: 4px;
 }
 
 .blog-page pre code {
   background: transparent;
   border: none;
   padding: 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: #e0e0e0; /* Slightly brighter default text */
+  font-size: 1em; /* Ensure consistent font size inside pre */
 }
+
+/* Syntax Highlighting Styles */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #8ca0b3; /* Muted blue-gray for comments */
+}
+
+.token.punctuation {
+  color: #e0e0e0;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #ff8da1; /* A softer pink for constants, numbers */
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #91baff; /* A light blue for strings */
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #e0e0e0;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #58a6ff; /* A vivid blue for keywords */
+}
+
+.token.function,
+.token.class-name {
+  color: #d2a8ff; /* A light purple for functions and class names */
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #ffab70; /* A soft orange for variables */
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
 
 /* Enhanced blockquotes */
 .blog-page blockquote {
