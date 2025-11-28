@@ -3,7 +3,7 @@ title: 'Everyone should learn C - Part #1: Error handling'
 date: 2025-11-8
 draft: true
 tags: ['opinion', 'c']
-# thumbnail: 'https://venturebeat.com/wp-content/uploads/2024/12/Vulkan-1.4-16by9.jpg?w=1024?w=1200&strip=all'
+thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/C_Programming_Language.svg/926px-C_Programming_Language.svg.png'
 slug: 'everyone-should-learn-c-pt-1'
 author: 'Leónidas Neftalí González Campos'
 ---
@@ -18,13 +18,34 @@ author: 'Leónidas Neftalí González Campos'
   />
 </center>
 
+
+## Table of contents
+<!--toc:start-->
+  - [Demistifying C](#demistifying-c)
+    - [It's not C++](#its-not-c)
+    - [C vs Python examples](#c-vs-python-examples)
+      - [Read some names from a file and print them to stdout](#read-some-names-from-a-file-and-print-them-to-stdout)
+  - [A muscle gets bigger by damaging it](#a-muscle-gets-bigger-by-damaging-it)
+    - [Defensive runtime check (elegantly ignore/handle the errors)](#defensive-runtime-check-elegantly-ignorehandle-the-errors)
+    - [Errors as values](#errors-as-values)
+        - [Errors as values in other languages](#errors-as-values-in-other-languages)
+        - [Usage of Errors as values in a C# API](#usage-of-errors-as-values-in-a-c-api)
+    - [Assertions](#assertions)
+        - ["BUT WAIT, MY LANGUAGE DOES NOT HAVE ASSERTS!!"](#but-wait-my-language-does-not-have-asserts)
+        - [Assert usage on other languages](#assert-usage-on-other-languages)
+        - [Again, asserts are for DEBUG ONLY](#again-asserts-are-for-debug-only)
+<!--toc:end-->
+
 ### Introduction
 If you're reading this, you're either interested in learning C, or you're somewhat skeptical on why **YOU** specifically should learn it, even if you're on a field that rarely ever dips that low into the abstraction layers.
 
-
-
-### Why?
 You're probably thinking *"Why should I bother learning a language I won't ever use, I use Python/Java/C#/JS"* or any other higher level language. My thesis here is that no matter what language you actually code in every day, learning C will fundamentally change how you think about computers and problem-solving, I'm confident on that because I myself have gone through this process where I thought I knew how to program, until I got thrown into a C project, and got tasked to add a value to a list... Oh, boy!
+
+Throughout this series we will take a look at a simple piece of code and try to see what we can learn from it, the benefit of C is the fact that the language is extremely simple, it does not give you built-in data structures or fancy ways to impose rules on your typesystem, programming in C boils down to knowing that ANY program in the world can be made from 2 computer science primitives:
+- Data
+- Functions
+
+And that lack of language features is what forces us to get creative to achieve complex behavior through simple constructs.
 
 ## Demistifying C
 
@@ -77,7 +98,7 @@ Now, there's obviously a lot you can say here to argue for the python version, l
 
 Have you ever gone to the gym? Have you ever felt that *burn* on your biceps when doing curls and thought to yourself "Oh, yeah, I'll be sore tomorrow, that means it's working", that feeling is your body telling you to stop what you're doing, it's uncomfortable and some might even say painful... but you push through the pain, why? Well, that's a sign that you're reaching its strength limit, and in response, your body will adapt and rebuild your muscle to expand this limit, so the next time you do a curl you can actually lift that weight with less effort. It was awful at the time, you stressed a muscle and it got bigger, stronger, THAT is what learning C does to you.
 
-Let's break down that file opening code, we can learn some very important lessons from it that can apply to almost all programming languages in multiple disciplines:
+Let's break down that file opening code, we can learn some very important lessons from it that can apply to almost all programming languages in error handling:
 
 We can start by looking at the definition of the `fopen` function
 
@@ -167,7 +188,131 @@ while (fgets(line, MAX_LINE_LENGTH, file) != NULL) {
 fclose(file);
 ```
 
-The error is still handled and the function is still easy to understand,
+The error is still handled and the function is still easy to understand.
+
+### Errors as values
+The lack of exceptions in the C programming language creates a need for proper error handling as simple value types, this technique is called **errors as values** and it is my personal favorite way to handle operations that could have one or many errors going into them, the idea behind this technique is simple, return a value (usually an enum member or an integer), and any results from the function can be stored in *out pointers*, let's take a look at an example:
+
+We are going to make a function to log in a user to our app, usually, the function would take in just the userName, password and it would return an actual instance of the User class with data from our database, it would like something like this:
+
+
+```c
+User UserLogin(const char* userName, const char* passwordHash) {
+    DatabaseHandler database = DatabaseGetHandler();
+
+    // Pray we are connected to the database(?
+
+    int64_t userId = FindIdFromUserName(database, userName);
+
+    if (userId < 0) {
+        // Oops, user not found
+        return User{};
+    }
+
+    User result = GetUserFromDB(database, userId);
+
+    // We check the hashes are equal
+    if (strcmp(result.passwordHash, passwordHash) != 0) {
+        // Oops, incorrect password
+        return User{};
+    }
+    
+    return result;
+}
+
+```
+
+You can see we have several failure points along that function... A lot of things can go very wrong, and sure, we could learn to handle all those, after all, the function will return an empty user in case of any potential failure, but that does not tell us WHY the function failed, and that is crucial not just to catch errors in production, but also to make our code reliably testable and easier to debug. Let's refactor that with errors as values
+
+```c
+
+// We define a set of known errors that encompass the domain of our operations in a general sense
+typedef enum EError {
+    Ok = 0,
+    EntryDoesNotExist,
+    IncorrectPassword,
+    FailedConnection
+} EError;
+
+// We no longer return the User value, we return the error value, and the user is now treated as an out reference parameter
+EError UserLogin(const char* userName, const char* passwordHash, User* outUser) {
+    DatabaseHandler database{};
+    EError err = DatabaseGetHandler(&database); // We changed the database handler to use this technique as well
+
+    // We cascade the error return to the user login call (this way we have our little call stack trickle down to the earliest caller)
+    ERR_COND_FAIL_MSG_V(err != Ok, err, "Failed to connect to the database, errno: %d\n", err);
+    
+    int64_t userId = FindIdFromUserName(database, userName);
+
+    ERR_COND_FAIL_V(userId >= 0, EntryDoesNotExist);
+
+    // We set the value of the out reference
+    *outUser = GetUserFromDB(database, userId);
+
+    bool passwordsMatch = strcmp(outUser->passwordHash, passwordHash) != 0;
+
+    // We check the hashes are equal
+    ERR_COND_FAIL_V(passwordsMatch, IncorrectPassword);
+    
+    return Ok;
+}
+```
+
+This method does not only handle its responsibility of logging the user in and validating that, but it also provides quite a lot of insight throuhgout its validation process for any caller to decide how to handle that error.
+
+### Errors as values in other languages
+
+I could not possibly live without errors as values now, it has become the absolute default way for me to code anything, so much so that I made a small bootstrapper library to get me started on any backend work in C# WITH errors as values, it's called [Aspis.NET](https://github.com/Kyn21kx/Aspis.NET)
+
+The core of Aspis.NET is this enum and result types, which are our values for any possible general errors:
+```cs
+﻿namespace AspisNet.Utils.ApiOperations {
+	/// <summary>
+	/// Possible results of any Logic operation (they should be used in a wrapper to return the proper status codes)
+	/// The API could return more than one of these in the form or a binary or operation, so check for <see cref="Enum.HasFlag(Enum)"/>
+	/// </summary>
+	[Flags]
+	public enum ApiOperationStatus : uint {
+		None = 0u,
+		Success = 1u,
+		Created = 2u,
+		Updated = 3u,
+		/// <summary>
+		/// The input of a process was not in the correct format
+		/// </summary>
+		ValidationError = 4u << 0,
+		/// <summary>
+		/// Tried to fetch data that does not exist in the Database
+		/// </summary>
+		EntityNotFoundError = 4u << 1,
+		/// <summary>
+		/// Tried to post data, but it currently exists in the Database
+		/// </summary>
+		DataConflictError = 4u << 2,
+		/// <summary>
+		/// A user tried to access a resource that they're not allowed to / they have incorrect credentials
+		/// </summary>
+		AuthorizationError = 4u << 3,
+		/// <summary>
+		/// Some behaviour internally in the program did not go as expected
+		/// </summary>
+		InternalError = 4u << 4,
+		UnkownError = 4u << 5,
+		IsErrorStatus = ValidationError | EntityNotFoundError | DataConflictError | AuthorizationError | InternalError | UnkownError
+	}
+}
+```
+
+
+### Usage of Errors as values in a C# API
+
+<center>
+  <img 
+    src="https://i.postimg.cc/zDQWcnXG/Screenshot-2025-11-28-152417.png" 
+  />
+</center>
+
+
 
 ### Assertions
 
@@ -259,3 +404,14 @@ protected override void OnCreate() {
 
 ### Again, asserts are for DEBUG ONLY
 One important caveat is that asserts will be stripped out in release builds, so, be sure to NEVER check user side data with them, for that we use runtime fail checks, which are essentially the same as an assert but they either do an early return or send an error message straight to the user.
+
+## Conclusion
+
+So, what’s the takeaway here? Learning C is not about abandoning your favorite high-level language, nor is it about worshipping at the altar of pointers and manual memory management. It’s about stretching your brain in ways that abstractions never will. Just like tearing muscle fibers in the gym, the discomfort of dealing with raw data and defensive checks forces you to grow stronger as a programmer.
+
+C teaches you to respect the machine, to anticipate failure, and to design with clarity. It strips away the safety nets and asks you to think about what your code is doing, why it’s doing it, and how it might break. And once you’ve wrestled with those fundamentals, every other language feels less like magic and more like a set of trade-offs you can consciously navigate.
+
+
+For the next part, we’ll move into the territory that truly defines low-level programming: references and memory allocation.
+
+We'll talk about the decisions and sacrifices your favorite modern programming language makes to make it easier for you to think about logic, and how we can regain control a little bit and use the models given to us by C in other languages.
