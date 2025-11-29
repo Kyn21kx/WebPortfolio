@@ -3,7 +3,7 @@ title: 'Everyone should learn C - Part #1: Error handling'
 date: 2025-11-8
 draft: true
 tags: ['opinion', 'c']
-thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/C_Programming_Language.svg/926px-C_Programming_Language.svg.png'
+thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/3/35/The_C_Programming_Language_logo.svg'
 slug: 'everyone-should-learn-c-pt-1'
 author: 'Leónidas Neftalí González Campos'
 ---
@@ -13,7 +13,7 @@ author: 'Leónidas Neftalí González Campos'
 
 <center>
   <img 
-    src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/C_Programming_Language.svg/926px-C_Programming_Language.svg.png" 
+    src="https://upload.wikimedia.org/wikipedia/commons/3/35/The_C_Programming_Language_logo.svg" 
     style="max-width: 50vw; max-height: 50vh; aspect-ratio: 1 / 1; object-fit: contain;"
   />
 </center>
@@ -61,7 +61,7 @@ I think there's this really weird sentiment towards C, people think it's this in
 
 
 ### C vs Python examples
-To prove that C is indeed very simple and make encourage you to get your feet wet a little bit, here is a simple program in C and Python that I bet you will find very easy to read, I will obviate the includes and those kinds of things because I really want to focus on the actual line by line instructions that we write, because I believe that will show that C truly is a lot more approachable than people think.
+To prove that C is indeed very simple and encourage you to get your feet wet a little bit, here is a simple program in C and Python that I bet you will find very easy to read, I will obviate the includes and those kinds of things because I really want to focus on the actual line by line instructions that we write, because I believe that will show that C truly is a lot more approachable than people think.
 
 #### Read some names from a file and print them to stdout
 ```c
@@ -249,7 +249,7 @@ EError UserLogin(const char* userName, const char* passwordHash, User* outUser) 
     // We set the value of the out reference
     *outUser = GetUserFromDB(database, userId);
 
-    bool passwordsMatch = strcmp(outUser->passwordHash, passwordHash) != 0;
+    bool passwordsMatch = strcmp(outUser->passwordHash, passwordHash) == 0;
 
     // We check the hashes are equal
     ERR_COND_FAIL_V(passwordsMatch, IncorrectPassword);
