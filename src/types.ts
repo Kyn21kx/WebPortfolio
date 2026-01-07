@@ -31,6 +31,7 @@ export type Project = {
 
 export enum VideoTags {
   Talk = "Talk",
+  DemoShowcase = "Demo / Showcase",
   Short = "Short"
 }
 

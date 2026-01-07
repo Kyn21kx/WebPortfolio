@@ -11,6 +11,12 @@ const videos: Video[] = [
     url: "https://youtu.be/oC_8CfYWP7c?si=4fQUxb5zW3aLnXP7",
     tags: [VideoTags.Talk],
   },
+  {
+    title: 'Hazel Game Code Review',
+    thumbnail: "https://i.ytimg.com/vi/WOnMkazhP5I/hq720.jpg?sqp=-oaymwEnCNAFEJQDSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLCszaYQl_cHD-ckEb00fML9U7riQg",
+    url: "https://youtu.be/WOnMkazhP5I?si=9J-e32vS5rdULpbR",
+    tags: [VideoTags.DemoShowcase],
+  },
 ];
 
 const VideoCarousel = () => {
