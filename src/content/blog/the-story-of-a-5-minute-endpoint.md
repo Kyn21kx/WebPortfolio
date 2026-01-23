@@ -27,7 +27,7 @@ That was the task that appeared one day on my Jira board at my job for an appoin
 The main company (which shall remain nameless for obvious reasons) clearly saw technology as a means to an end, they didn't need to "disrupt" the industry. They just needed a platform that worked, and have as many features as the CEO came up with that day; this resulted in the whole software development department being treated as a factory, a factory that can keep on producing more and more, if there was a bottleneck it was not "tech-debt", to them, it was the engineer not working as fast as they could, any raised concerns about the increasingly fragile jenga tower we were calling our product would be promptly dismissed.
 
 ## Investigating the crash
-So... it was not a crash, it didn't take long to figure out either, the product and QA departments thought it was a crash because when they clicked on the button to update the user list the front-end would wait for the back-end to respond with the confirmation that the lists were created/updated succesfully, and the response never came. So they assumed the server had crashed; in reality it was simply still going... That's right, the back-end was taking a concerning amount of time to upload that data to the databse, but why?
+So... it was not a crash, it didn't take long to figure out either, the product and QA departments thought it was a crash because when they clicked on the button to update the user list the front-end would wait for the back-end to respond with the confirmation that the entities were created/updated succesfully, and the response never came. So they assumed the server had crashed; in reality it was simply still going... That's right, the back-end was taking a concerning amount of time to upload that data to the databse, but why?
 
 ## The repository pattern
 For anyone that isn't that familiar with how C# codebases usually handle sending queries to an SQL databse, it is common to implement something called a `Repository` which contains a functional way to describe query operations, for example, the most commonly used functions you'll find are:
@@ -36,15 +36,15 @@ For anyone that isn't that familiar with how C# codebases usually handle sending
 await this.m_userRepository.InsertAsync(userToInsert);
 
 // READ
-User user = this.m_userRepository.FirstOrDefaultAsync();
+User user = await this.m_userRepository.FirstOrDefaultAsync();
 
 user.name = "New name";
 
 // UPDATE
-this.m_userRepository.UpdateAsync(user);
+await this.m_userRepository.UpdateAsync(user);
 
 // DELETE
-this.m_userRepository.DeleteAsync(userToDelete);
+await this.m_userRepository.DeleteAsync(userToDelete);
 ```
 These are single entity operations, which means only one user (in this case) will get affected by this operation, there are of course ways to affect multiple entities all at once so that the query backend the EF core framework uses generates a somewhat "optimized" query that targets all entities within the specified table/range. That is not hard to implement either (spoiler alert, it's literally 2 to 3 lines of code), but for **SOME REASON** that truly escapes me, this particular company opted to use a meta-framework called ABP.
 
