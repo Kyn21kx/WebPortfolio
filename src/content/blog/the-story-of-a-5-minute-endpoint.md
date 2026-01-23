@@ -13,7 +13,7 @@ author: 'Leónidas Neftalí González Campos'
 
 <center>
   <img 
-    src="https://i.sstatic.net/lhJ8u.png" 
+    src="https://vintageits.com/wp-content/uploads/2019/06/slow-running-computer.jpg" 
     style="max-width: 50vw; max-height: 50vh; aspect-ratio: 1 / 1; object-fit: contain;"
   />
 </center>
@@ -100,3 +100,9 @@ public Task InsertManyAsync(ICollection<T> entities)
 ```
 
 As I said, two lines of code, and the problem was solved. After I did that I had to schedule a meeting for the entire team to look at the new implementation and help me eliminate all other manual bulk operations in favor of this implementation.
+
+After we implemented this, the user list endpoint went from those 5+ minutes to execute to just 300ms for the roundtrip, so, needless to say I think it was a very clear improvement over the original implementation, everyone on the team could clearly see it, and a couple of my coworkers congratulated me for my optimization techniques and knowledge, but I think you all can agree with me here... It really wasn't so much that I did something smart, rather than I just removed something extremely stupid, you know, the old attage and all that
+
+## Conclusion(?
+
+I don't think there's much here to learn on a technical sense, but maybe there's something on a managerial one, if the development team is constantly pushing for new features and does not have time to look back even a little bit it WILL reflect on the product. Some of my peers think I'm some kind of optimization extremist, but I really just advocate for common sense measures to not let tech debt bleed out to the final users, they're always the ones paying the price of bad software, and I think we have a moral obligation to do right by them.
