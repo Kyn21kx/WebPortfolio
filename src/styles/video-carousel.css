@@ -5,25 +5,34 @@
   border-bottom: 1px solid var(--border, #182a3e);
 }
 
-.video-carousel-container .section-title {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  color: var(--text, #b8cfe0);
-  font-size: 1.4rem;
-  font-weight: 600;
-  margin-bottom: 2.5rem;
-  text-align: left;
-}
-
-.carousel {
-  position: relative;
+/* Single padded wrapper — title and track share the same horizontal bounds */
+.carousel-wrapper {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 }
 
+.carousel-wrapper .section-title {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  color: var(--text, #cce0f0);
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+/* Row: [prev btn] [track] [next btn] */
+.carousel-track-outer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .carousel-track-container {
+  flex: 1;
   overflow: hidden;
   border-radius: 6px;
+  min-width: 0;
 }
 
 .carousel-track {
@@ -33,12 +42,12 @@
 
 .video-card {
   flex: 0 0 100%;
-  padding: 0 1rem;
   box-sizing: border-box;
 }
 
 .video-card a {
   text-decoration: none;
+  display: block;
 }
 
 .video-thumbnail {
@@ -70,15 +79,16 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 64px;
-  height: 64px;
-  background: rgba(8, 16, 26, 0.7);
+  width: 60px;
+  height: 60px;
+  background: rgba(8, 16, 26, 0.65);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid rgba(184, 207, 224, 0.3);
+  border: 1px solid rgba(204, 224, 240, 0.25);
   transition: background 0.2s, border-color 0.2s;
+  pointer-events: none;
 }
 
 .video-thumbnail:hover .play-button {
@@ -91,9 +101,9 @@
   display: block;
   width: 0;
   height: 0;
-  border-top: 14px solid transparent;
-  border-bottom: 14px solid transparent;
-  border-left: 22px solid var(--text, #b8cfe0);
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 20px solid var(--text, #cce0f0);
   margin-left: 4px;
 }
 
@@ -107,10 +117,10 @@
 
 .video-title {
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  color: var(--text, #b8cfe0);
-  font-size: 1.25rem;
+  color: var(--text, #cce0f0);
+  font-size: 1.15rem;
   font-weight: 600;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.75rem;
   line-height: 1.3;
 }
 
@@ -133,37 +143,62 @@
   font-family: var(--font-mono, 'IBM Plex Mono', monospace);
 }
 
+/* Arrow buttons — flex siblings, no absolute positioning */
 .carousel-button {
-  position: absolute;
-  top: calc(50% - 2rem);
-  transform: translateY(-50%);
+  flex-shrink: 0;
   background: var(--bg-raised, #0d1a28);
   border: 1px solid var(--border, #182a3e);
   border-radius: 50%;
-  color: var(--text-muted, #5a7a96);
-  width: 44px;
-  height: 44px;
+  color: var(--text-muted, #7a9ab5);
+  width: 42px;
+  height: 42px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s;
-  z-index: 1;
+  align-self: center;
 }
 
 .carousel-button:hover {
   border-color: var(--blue, #3d7fc1);
-  color: var(--text, #b8cfe0);
+  color: var(--text, #cce0f0);
 }
 
-.carousel-button.prev { left: -22px; }
-.carousel-button.next { right: -22px; }
+/* Dot indicators */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--border, #182a3e);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.carousel-dot.active {
+  background: var(--blue, #3d7fc1);
+  border-color: var(--blue, #3d7fc1);
+}
+
+.carousel-dot:hover:not(.active) {
+  border-color: var(--text-muted, #7a9ab5);
+  background: var(--border, #182a3e);
+}
 
 @media (max-width: 768px) {
-  .video-carousel-container .section-title { font-size: 1.2rem; }
-  .carousel { padding: 0 1rem; }
-  .video-thumbnail img { height: 260px; }
-  .video-title { font-size: 1.1rem; }
-  .carousel-button.prev { left: 0; }
-  .carousel-button.next { right: 0; }
+  .carousel-wrapper { padding: 0 1rem; }
+  .carousel-wrapper .section-title { font-size: 1.2rem; }
+  .video-thumbnail img { height: 240px; }
+  .video-title { font-size: 1rem; }
+  .carousel-button { width: 36px; height: 36px; }
+  .carousel-track-outer { gap: 0.5rem; }
 }

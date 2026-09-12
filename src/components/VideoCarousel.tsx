@@ -1,7 +1,6 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Video, VideoTags } from '../types';
+import { type Video, VideoTags } from '../types';
 import '../styles/video-carousel.css';
 
 const videos: Video[] = [
@@ -19,58 +18,88 @@ const videos: Video[] = [
   },
 ];
 
+const AUTOPLAY_INTERVAL = 6000;
+
 const VideoCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [userPaused, setUserPaused] = useState(false);
+
+  const next = useCallback(() => {
+    setCurrentIndex(i => (i + 1) % videos.length);
+  }, []);
+
+  const prev = useCallback(() => {
+    setCurrentIndex(i => (i === 0 ? videos.length - 1 : i - 1));
+  }, []);
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? videos.length - 1 : prevIndex - 1
-    );
+    setUserPaused(true);
+    prev();
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === videos.length - 1 ? 0 : prevIndex + 1
-    );
+    setUserPaused(true);
+    next();
   };
+
+  const goTo = (index: number) => {
+    setUserPaused(true);
+    setCurrentIndex(index);
+  };
+
+  useEffect(() => {
+    if (userPaused) return;
+    const timer = setInterval(next, AUTOPLAY_INTERVAL);
+    return () => clearInterval(timer);
+  }, [userPaused, next]);
 
   return (
     <div className="video-carousel-container">
-      <h2 className="section-title">Featured Videos</h2>
-      <div className="carousel">
-        <button className="carousel-button prev" onClick={handlePrev}>
-          <ChevronLeft size={32} />
-        </button>
-        <div className="carousel-track-container">
-          <div
-            className="carousel-track"
-            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-          >
-            {videos.map((video, index) => (
-              <div className="video-card" key={index}>
-                <a href={video.url} target="_blank" rel="noopener noreferrer">
-                  <div className="video-thumbnail">
-                    <img src={video.thumbnail} alt={video.title} />
-                    <div className="play-button"></div>
-                  </div>
-                  <div className="video-info">
-                    <h3 className="video-title">{video.title}</h3>
-                    <div className="video-tags">
-                      {video.tags.map((tag, tagIndex) => (
-                        <span key={tagIndex} className="tag">
-                          {tag}
-                        </span>
-                      ))}
+      <div className="carousel-wrapper">
+        <h2 className="section-title">Featured Videos</h2>
+        <div className="carousel-track-outer">
+          <button className="carousel-button prev" onClick={handlePrev} aria-label="Previous">
+            <ChevronLeft size={22} />
+          </button>
+          <div className="carousel-track-container">
+            <div
+              className="carousel-track"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {videos.map((video, index) => (
+                <div className="video-card" key={index}>
+                  <a href={video.url} target="_blank" rel="noopener noreferrer">
+                    <div className="video-thumbnail">
+                      <img src={video.thumbnail} alt={video.title} />
+                      <div className="play-button"></div>
                     </div>
-                  </div>
-                </a>
-              </div>
-            ))}
+                    <div className="video-info">
+                      <h3 className="video-title">{video.title}</h3>
+                      <div className="video-tags">
+                        {video.tags.map((tag, tagIndex) => (
+                          <span key={tagIndex} className="tag">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              ))}
+            </div>
           </div>
+          <button className="carousel-button next" onClick={handleNext} aria-label="Next">
+            <ChevronRight size={22} />
+          </button>
         </div>
-        <button className="carousel-button next" onClick={handleNext}>
-          <ChevronRight size={32} />
-        </button>
+        <div className="carousel-dots">
+          {videos.map((_, i) => (
+            <button
+              key={i}
+              className={`carousel-dot${i === currentIndex ? ' active' : ''}`}
+              onClick={() => goTo(i)}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
