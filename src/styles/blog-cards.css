@@ -1,32 +1,37 @@
+/* ── Blog list section title ─────────────────────────────── */
 .sectionTitle {
-  font-size: 26px;
-  font-weight: 700;
-  display: inline;
-  background: linear-gradient(to right, #8803A0 20%, #FF7180 80%);
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text, #b8cfe0);
+  display: block;
 }
 
-/* Blog Post Container */
+/* ── Blog card ──────────────────────────────────────────── */
 .blog-card {
-  transition: all 0.3s ease-out;
+  transition: transform 0.2s ease-out;
+  background: var(--bg-raised, #0d1a28);
+  border: 1px solid var(--border, #182a3e);
+  border-radius: 6px;
 }
 
 .blog-card-image {
   object-fit: cover;
-  border-radius: 15px;
-  max-height: 170px;
+  border-radius: 5px 5px 0 0;
+  max-height: 160px;
+  width: 100%;
 }
 
-.blog-card:hover  {
-  transform: scale(1.05);
+.blog-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--blue-dim, #122035);
 }
 
 .card-body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: 1rem;
 }
 
 .card-body .read-more {
@@ -35,99 +40,122 @@
 }
 
 .card-body .tag {
-  background-color: #ffffff33;
-  color: #fff;
+  background: var(--blue-dim, #122035);
+  color: var(--blue, #3d7fc1);
+  border: 1px solid rgba(61, 127, 193, 0.25);
   font-size: 0.65rem;
-  padding: 6px 8px;
-  border-radius: 4px;
-  margin-right: 10px;
+  padding: 3px 7px;
+  border-radius: 3px;
+  margin-right: 6px;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .card-body .post-title {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text, #b8cfe0);
+  margin-bottom: 8px;
+  line-height: 1.35;
 }
 
 .card-body .post-author {
-  font-size: 0.8rem;
-  margin-bottom: 5px;
-  font-weight: bolder;
+  font-size: 0.78rem;
+  color: var(--text-muted, #5a7a96);
+  margin-bottom: 3px;
+  font-weight: 500;
 }
 
 .card-body .post-date {
   font-size: 0.7rem;
-  margin-bottom: 15px;
+  color: var(--text-faint, #2a4460);
+  margin-bottom: 12px;
 }
 
 .card-body .read-more {
-  font-size: 0.7rem;
-  background-color: #fff;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.78rem;
+  color: var(--blue, #3d7fc1);
   text-decoration: none;
-  font-weight: bolder;
-  border-radius: 4px;
+  font-weight: 600;
   display: inline-block;
+  border-bottom: 1px solid var(--blue, #3d7fc1);
+  padding-bottom: 1px;
+  transition: color 0.2s, border-color 0.2s;
+  background: transparent;
+  border-radius: 0;
 }
 
 .card-body .read-more:hover {
+  color: var(--blue-hover, #5a9ad8);
+  border-bottom-color: var(--blue-hover, #5a9ad8);
   text-decoration: none;
 }
 
 .no-results-container {
-  height: 440px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 img.no-results {
-  width: 300px;
+  width: 260px;
+  opacity: 0.5;
 }
 
-/* Paginación */
+/* ── Pagination ─────────────────────────────────────────── */
 .pagination .page-link {
-  border: none;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  color: #fff;
-  height: 40px;
-  width: 34px;
+  border: 1px solid var(--border, #182a3e);
+  background: var(--bg-raised, #0d1a28);
+  border-radius: 3px;
+  color: var(--text-muted, #5a7a96);
+  height: 36px;
+  width: 32px;
   padding: 0;
+  font-size: 0.85rem;
 }
 
 .pagination .page-link:focus {
   box-shadow: none !important;
   outline: none !important;
-  border-color: #ccc !important;
 }
 
 .pagination .page-item.active .page-link {
-  background-color: white;
-  color: black;
+  background: var(--blue, #3d7fc1);
+  border-color: var(--blue, #3d7fc1);
+  color: var(--bg, #08101a);
 }
 
 .pagination .page-item.disabled .page-link {
-  background-color: rgba(255, 255, 255, 0.2);
+  background: var(--bg-raised, #0d1a28);
+  border-color: var(--border, #182a3e);
+  color: var(--text-faint, #2a4460);
   cursor: not-allowed;
 }
 
 .pagination .page-item .page-link img {
-  width: 15px;
-  height: 15px;
-}
-
-.page-item:nth-last-child() {
-  margin-right: 0;
+  width: 14px;
+  height: 14px;
+  filter: invert(0.5);
 }
 
 .arrow-button button {
-  background-color: transparent;
+  background: transparent;
   border: none;
-  height: 40px;
+  height: 36px;
   padding: 0;
 }
 
-
+/* ── Tech pill (used in blog search results) ───────────── */
 .tech {
-  background: #333;
-  color: #0ff;
+  background: transparent;
+  color: var(--text-muted, #5a7a96);
   padding: 0.2rem 0.5rem;
   font-size: 0.75rem;
-  border: 1px solid #0ff;
+  border: 1px solid var(--border, #182a3e);
+  border-radius: 3px;
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
 }

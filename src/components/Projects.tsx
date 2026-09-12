@@ -90,7 +90,7 @@ const Projects = ({ projects = [] }) => {
                 target="_blank"
                 className="project-link"
               >
-                VIEW PROJECT
+                → View project
               </a>
             </div>
           </div>
@@ -181,12 +181,10 @@ const Projects = ({ projects = [] }) => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .projects-container {
-          background: #121212;
-          min-height: 100vh;
+          background: #08101a;
           padding: 4rem 0;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         .container {
@@ -196,102 +194,85 @@ const Projects = ({ projects = [] }) => {
         }
 
         .section-title {
-          color: #fff;
-          font-size: 2.5rem;
-          font-weight: 700;
-          margin-bottom: 3rem;
-          text-align: center;
-          background: linear-gradient(135deg, #0ff, #00cccc);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          font-family: 'IBM Plex Mono', monospace;
+          color: #cce0f0;
+          font-size: 1.4rem;
+          font-weight: 600;
+          margin-bottom: 2.5rem;
+          text-align: left;
         }
 
-        /* Filter Section Styles */
         .filter-section {
           display: flex;
-          gap: 1rem;
-          margin-bottom: 2rem;
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
           align-items: center;
           flex-wrap: wrap;
-          justify-content: center;
         }
 
         .filter-toggle {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
-          padding: 1rem 1.5rem;
-          background: rgba(26, 26, 26, 0.9);
-          border: 2px solid rgba(0, 255, 255, 0.2);
-          border-radius: 25px;
-          color: #fff;
-          font-size: 1rem;
-          font-weight: 600;
+          gap: 0.4rem;
+          padding: 0.45rem 0.9rem;
+          background: #0d1a28;
+          border: 1px solid #182a3e;
+          border-radius: 4px;
+          color: #7a9ab5;
+          font-size: 0.85rem;
           cursor: pointer;
-          transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
-          position: relative;
+          transition: border-color 0.2s, color 0.2s;
         }
 
         .filter-toggle:hover,
         .filter-toggle.active {
-          border-color: #0ff;
-          box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+          border-color: #3d7fc1;
+          color: #cce0f0;
         }
 
         .filter-count {
-          background: linear-gradient(135deg, #0ff, #00cccc);
-          color: #000;
-          font-size: 0.8rem;
+          background: #3d7fc1;
+          color: #08101a;
+          font-size: 0.7rem;
           font-weight: 700;
-          padding: 0.2rem 0.5rem;
-          border-radius: 10px;
-          min-width: 1.2rem;
+          padding: 0.1rem 0.4rem;
+          border-radius: 2px;
+          min-width: 1.1rem;
           text-align: center;
         }
 
         .clear-all-btn {
-          padding: 1rem 1.5rem;
-          background: linear-gradient(135deg, #ff4444, #cc3333);
-          border: none;
-          border-radius: 25px;
-          color: #fff;
-          font-size: 1rem;
-          font-weight: 600;
+          padding: 0.45rem 0.9rem;
+          background: transparent;
+          border: 1px solid #182a3e;
+          border-radius: 4px;
+          color: #7a9ab5;
+          font-size: 0.85rem;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: border-color 0.2s, color 0.2s;
         }
 
         .clear-all-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(255, 68, 68, 0.3);
+          border-color: #a03030;
+          color: #c04040;
         }
 
-        /* Filter Options */
         .filter-options {
-          background: rgba(26, 26, 26, 0.9);
-          border: 1px solid rgba(0, 255, 255, 0.2);
-          border-radius: 20px;
-          padding: 2rem;
-          margin-bottom: 2rem;
-          backdrop-filter: blur(20px);
-          animation: slideDown 0.3s ease;
+          background: #0d1a28;
+          border: 1px solid #182a3e;
+          border-radius: 5px;
+          padding: 1.25rem;
+          margin-bottom: 1.5rem;
+          animation: slideDown 0.2s ease;
         }
 
         @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         .filter-group {
-          margin-bottom: 2rem;
+          margin-bottom: 1.25rem;
         }
 
         .filter-group:last-child {
@@ -299,81 +280,74 @@ const Projects = ({ projects = [] }) => {
         }
 
         .filter-group-title {
-          color: #0ff;
-          font-size: 1.2rem;
-          font-weight: 700;
-          margin-bottom: 1rem;
-          background: linear-gradient(135deg, #0ff, #00cccc);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          font-family: 'IBM Plex Mono', monospace;
+          color: #7a9ab5;
+          font-size: 0.7rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          margin-bottom: 0.6rem;
         }
 
         .filter-items {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.5rem;
+          gap: 0.35rem;
         }
 
         .filter-item {
-          padding: 0.5rem 1rem;
-          background: rgba(0, 255, 255, 0.1);
-          border: 1px solid rgba(0, 255, 255, 0.3);
-          border-radius: 20px;
-          color: #0ff;
-          font-size: 0.9rem;
-          font-weight: 500;
+          padding: 0.25rem 0.65rem;
+          background: transparent;
+          border: 1px solid #182a3e;
+          border-radius: 3px;
+          color: #7a9ab5;
+          font-size: 0.78rem;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: border-color 0.2s, color 0.2s, background 0.2s;
         }
 
         .filter-item:hover {
-          background: rgba(0, 255, 255, 0.2);
-          transform: translateY(-1px);
+          border-color: #3d7fc1;
+          color: #cce0f0;
         }
 
         .filter-item.active {
-          background: linear-gradient(135deg, #0ff, #00cccc);
-          color: #000;
-          font-weight: 700;
-          border-color: transparent;
-          box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+          background: #122035;
+          border-color: #3d7fc1;
+          color: #3d7fc1;
+          font-weight: 600;
         }
 
         .results-info {
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 1rem;
-          margin-bottom: 3rem;
-          text-align: center;
-          padding: 1rem;
-          background: rgba(0, 255, 255, 0.05);
-          border-radius: 12px;
-          border: 1px solid rgba(0, 255, 255, 0.1);
+          font-family: 'IBM Plex Mono', monospace;
+          color: #3a5878;
+          font-size: 0.75rem;
+          margin-bottom: 2.5rem;
         }
 
         .no-results {
           text-align: center;
           padding: 4rem 2rem;
-          background: rgba(26, 26, 26, 0.6);
-          border-radius: 20px;
-          border: 1px solid rgba(0, 255, 255, 0.1);
+          border: 1px solid #182a3e;
+          border-radius: 5px;
         }
 
         .no-results h3 {
-          color: #fff;
-          font-size: 1.5rem;
-          margin-bottom: 1rem;
+          font-family: 'IBM Plex Mono', monospace;
+          color: #cce0f0;
+          font-size: 1.2rem;
+          margin-bottom: 0.5rem;
         }
 
         .no-results p {
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 1rem;
+          color: #7a9ab5;
+          font-size: 0.9rem;
         }
 
         .projects-list {
           display: flex;
           flex-direction: column;
-          gap: 6rem;
+          gap: 4rem;
         }
 
         .project-item {
@@ -381,86 +355,30 @@ const Projects = ({ projects = [] }) => {
           display: flex;
         }
 
-        .project-left {
-          justify-content: flex-start;
-        }
-
-        .project-right {
-          justify-content: flex-end;
-        }
+        .project-left { justify-content: flex-start; }
+        .project-right { justify-content: flex-end; }
 
         .gradient-container {
-          position: relative;
-          max-width: 800px;
+          max-width: 820px;
           width: 90%;
-          background: linear-gradient(
-            135deg,
-            rgba(0, 255, 255, 0.15) 0%,
-            rgba(0, 255, 255, 0.05) 30%,
-            rgba(0, 255, 255, 0.02) 60%,
-            transparent 100%
-          );
-          border-radius: 24px;
-          padding: 2px;
-          backdrop-filter: blur(10px);
-          box-shadow: 
-            0 8px 32px rgba(0, 255, 255, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          border: 1px solid #182a3e;
+          border-radius: 6px;
           overflow: hidden;
-        }
-
-        .project-right .gradient-container {
-          background: linear-gradient(
-            -135deg,
-            rgba(0, 255, 255, 0.15) 0%,
-            rgba(0, 255, 255, 0.05) 30%,
-            rgba(0, 255, 255, 0.02) 60%,
-            transparent 100%
-          );
-        }
-
-        .gradient-container::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(
-            135deg,
-            rgba(0, 255, 255, 0.03) 0%,
-            transparent 50%
-          );
-          border-radius: 24px;
-          z-index: -1;
+          transition: border-color 0.2s, transform 0.2s;
         }
 
         .gradient-container:hover {
-          transform: translateY(-8px);
-          box-shadow: 
-            0 20px 40px rgba(0, 255, 255, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        }
-
-        .gradient-container:hover::before {
-          background: linear-gradient(
-            135deg,
-            rgba(0, 255, 255, 0.08) 0%,
-            transparent 50%
-          );
+          border-color: #1e3d60;
+          transform: translateY(-2px);
         }
 
         .project-content {
-          background: rgba(26, 26, 26, 0.9);
-          border-radius: 22px;
-          padding: 2rem;
+          background: #0d1a28;
+          padding: 1.75rem;
           display: grid;
-          grid-template-columns: 300px 1fr;
-          gap: 2rem;
-          align-items: center;
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(0, 255, 255, 0.1);
+          grid-template-columns: 260px 1fr;
+          gap: 1.75rem;
+          align-items: start;
         }
 
         .project-image-container {
@@ -469,152 +387,103 @@ const Projects = ({ projects = [] }) => {
 
         .project-image {
           width: 100%;
-          height: 200px;
+          height: 170px;
           object-fit: cover;
-          border-radius: 16px;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-          transition: all 0.3s ease;
+          border-radius: 3px;
+          transition: opacity 0.2s;
         }
 
         .gradient-container:hover .project-image {
-          transform: scale(1.05);
-          box-shadow: 0 12px 32px rgba(0, 255, 255, 0.2);
+          opacity: 0.88;
         }
 
         .project-info {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.65rem;
         }
 
         .project-tags {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.5rem;
+          gap: 0.35rem;
         }
 
         .tag {
-          background: linear-gradient(135deg, #0ff, #00cccc);
-          color: #000;
-          padding: 0.4rem 0.8rem;
-          border-radius: 20px;
-          font-size: 0.75rem;
-          font-weight: 700;
+          background: #122035;
+          color: #3d7fc1;
+          border: 1px solid rgba(61, 127, 193, 0.28);
+          padding: 0.18rem 0.55rem;
+          border-radius: 2px;
+          font-size: 0.68rem;
+          font-weight: 600;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.06em;
+          font-family: 'IBM Plex Mono', monospace;
         }
 
         .project-technologies {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.5rem;
+          gap: 0.35rem;
         }
 
         .tech {
-          background: rgba(0, 255, 255, 0.1);
-          color: #0ff;
-          border: 1px solid rgba(0, 255, 255, 0.3);
-          padding: 0.3rem 0.6rem;
-          border-radius: 12px;
-          font-size: 0.8rem;
-          font-weight: 500;
+          background: transparent;
+          color: #7a9ab5;
+          border: 1px solid #182a3e;
+          padding: 0.15rem 0.45rem;
+          border-radius: 2px;
+          font-size: 0.72rem;
+          font-family: 'IBM Plex Mono', monospace;
         }
 
         .project-title {
-          color: #fff;
-          font-size: 1.8rem;
-          font-weight: 700;
-          margin: 0;
-          background: linear-gradient(135deg, #fff, #ccc);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          font-family: 'IBM Plex Mono', monospace;
+          color: #cce0f0;
+          font-size: 1.3rem;
+          font-weight: 600;
+          margin: 0.15rem 0;
+          line-height: 1.25;
         }
 
         .project-description {
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 1rem;
-          line-height: 1.6;
+          color: #7a9ab5;
+          font-size: 0.9rem;
+          line-height: 1.7;
           margin: 0;
         }
 
         .project-link {
-          background: linear-gradient(135deg, #0ff, #00cccc);
-          color: #000;
-          padding: 0.8rem 1.5rem;
-          border-radius: 25px;
-          text-decoration: none;
-          font-weight: 700;
-          font-size: 0.9rem;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          transition: all 0.3s ease;
+          font-family: 'IBM Plex Mono', monospace;
+          color: #3d7fc1;
+          font-size: 0.82rem;
           align-self: flex-start;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .project-link::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-          transition: left 0.5s;
-        }
-
-        .project-link:hover::before {
-          left: 100%;
+          padding-bottom: 1px;
+          border-bottom: 1px solid #3d7fc1;
+          transition: color 0.2s, border-color 0.2s;
+          text-decoration: none;
         }
 
         .project-link:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
-          color: #000;
+          color: #5a9ad8;
+          border-bottom-color: #5a9ad8;
         }
 
         @media (max-width: 768px) {
-          .container {
-            padding: 0 1rem;
-          }
-          
-          .section-title {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-          }
-          
-          .filter-section {
-            flex-direction: column;
-            align-items: stretch;
-          }
-          
-          .filter-options {
-            padding: 1.5rem;
-          }
-          
-          .projects-list {
-            gap: 4rem;
-          }
-          
-          .gradient-container {
-            width: 100%;
-          }
-          
+          .container { padding: 0 1rem; }
+          .section-title { font-size: 1.2rem; margin-bottom: 2rem; }
+          .filter-section { flex-direction: column; align-items: stretch; }
+          .filter-options { padding: 1rem; }
+          .projects-list { gap: 3rem; }
+          .gradient-container { width: 100%; }
           .project-content {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
-            padding: 1.5rem;
+            gap: 1.25rem;
+            padding: 1.25rem;
           }
-          
-          .project-image {
-            height: 180px;
-          }
-          
-          .project-title {
-            font-size: 1.5rem;
-          }
+          .project-image { height: 150px; }
+          .project-title { font-size: 1.1rem; }
         }
       `}</style>    
     </div>
