@@ -119,3 +119,67 @@ Becomes => 1
 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
 
 Becomes => 5
+
+The maximum number we can represent if we turn on ALL the slots:
+
+| 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+|-|-|-|-|-|-|-|
+| 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+
+64 + 32 + 16 + 8 + 4 + 2 + 1 = 255
+
+This, of course only covers positive numbers, that's what the `u` in `uint8_t` stands for: `unsigned`, if we want to represent negative numbers with the same amount of bytes, we need to apply something called [Two's complement](https://en.wikipedia.org/wiki/Two%27s_complement), we won't really get into that right now, but TLDR; it cuts the representable numbers in half (and one extra position for +0 and -0 respectively).
+
+#### Number limits
+
+For any number of bits (N) in an integer variable, we can quickly find out the limits by doing `MAX_NUM = 2^N` if the type is unsigned, and `MAX_NUM = [(2^N) / 2] - 1` if it's signed
+
+### Optimizing with integers (understand the problem to understand the data)
+
+But... Why is this information useful to us???
+
+Well, knowing the ins and outs of integers and how they are represented can be very beneficial in low level programming, most notably it lets us do memory layout optimizations if we know the specific usage of those number, let's quickly look at an example:
+
+You are tasked with building a game with A LOT of enemies, we're talking thousands on screen at any given point, the enemy struct currently looks like this:
+
+```c
+typedef struct Enemy {
+	Vector3 position;
+	int damage;
+	int health;
+	int maxHealth;
+	int armor;
+	int level;
+} Enemy;
+```
+
+All the fields are self explanatory, as a small note, a Vector3 is 12 bytes in size, so, knowing this, let's calculate the size of our enemy struct, by default, in most modern C compilers, a raw `int` is 4 bytes (essentially an `int32_t`), so
+
+```c
+typedef struct Enemy {
+	Vector3 position; // 12
+	int damage; // 12 + 4 = 16
+	int health; // 16 + 4 = 20
+	int maxHealth; // 20 + 4 = 24
+	int armor; // 24 + 4 = 28
+	int level; // 28 + 4 = 32
+} Enemy;
+```
+
+So, our enemy is 32 bytes in memory, and remember how I mentioned we'll have thousands of them on-screen at any given point?
+
+Let's allocate that in an array:
+
+```c
+#define MAX_ON_SCREEN_ENEMIES 2000
+Enemy* enemies = malloc(sizeof(Enemy) * MAX_ON_SCREEN_ENEMIES); // 32 * 2000 = 64000 = 62.5 kB
+```
+
+The enemies array memory footprint is 62.5kB, which might not sound like much, but things do add up with time, and if the enemies become more complex throughout development, this will get worse with time, so, how do we optimize things here? By understanding the problem, and modeling the data after it.
+By not knowing anything specific about our game we can't really make decisions about what to do to reduce memory usage, but, our imaginary game designer has stipulated that
+
+- Any unit's health falls between the range of 0 - 100, this can be suported fully by `int8_t` (-127, 127)
+- Armor is a factor in a formula the designer came up with that feels pretty good `damageTaken = ((incomingDamage)/(1 + ((armor)/(5))))` (based on an actual implementation of armor in League of Legends). You graphed it and this is the result
+
+... It basically plateus at about 180 armor, reducing the damage by about 97%, that no longer falls in the ranged of a signed 8 bit integer, but there's also no need to increase the bit size of our integer, just to get rid of the sign to go from a maximum of 127 to 255, which is more than enough to cover our most extreme case of super tanky enemies, so we turn this into a `uint8_t`.
+
