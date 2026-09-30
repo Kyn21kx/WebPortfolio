@@ -36,50 +36,7 @@ Here’s a more concrete table of tools that you might find useful throughout th
 | Linux         | GCC                                 | GDB         |
 | MacOS         | AppleClang                          | LLDB        |
   
-  
-## Your first program (more than a "Hello World!")  
-With a compiler and debugger now installed on your system, we can start writing our first program.  
-```c
-#define RC_OK 0
-
-int main() {
-	printf("Hello There!");
-	return RC_OK;
-}
-
-```
-I know, I know, you've probably already written this code a million times before, but please allow me to try and convince you this time it'll be different, you see, I sneaked a tiny detail in that program, did you catch it?
-
-...
-
-That's right, the `#define RC_OK 0`, this is simply a constant definition for the program's return code, and here's where we can already start thinking differently about the code you write...
-  
 ## Part 1. The Humble Integer  
-
-If you're not familiar with them, return / exit codes are simply integer values EVERY single program needs to return when completing their execution, it's a way to tell the OS "Hey, I'm done with my work, and everything went well" (if the code is 0), or "I stopped running and things were not ideal" (any other number), one might want to return any other number as a way to identify not only that there was an error during execution, but specifically which error that was:
-
-Imagine we're building an app that only users with valid credentials can use, we can do the following
-
-```c
-#define RC_OK 0
-#define RC_USER_NOT_FOUND 1
-#define RC_BAD_PASS 2
-
-int main() {
-
-	User u = GetUserFromInput();
-	if (!IsValidUser(u.name)) {
-		return RC_USER_NOT_FOUND;
-	}
-	if (!MatchesPass(u.name, u.password)) {
-		return RC_BAD_PASS;
-	}
-	return RC_OK;
-}
-```
-
-This approach to programming is called "errors as values", and I have a whole [article](https://computergoblin.com/blog/everyone-should-learn-c-pt-1/) going in-depth into how to integrate it into common programming paradigms.
-I won't go into too mich detail about this particular techniquentoday because of the afore mentioned article, but I personally think exit codes are a great example of the power behind limitations, it forces you to get creative and find ways to make the most put of the least, and that right there, that's what systems programming is all about.
 
 ### Integer types
 If you come from a language like JS or Python you may only be familiar with the default `number` or `int`types to represent integers, but in other languages and tech stacks we have different types for integers which change in bit size and their binary interpretation (signed/unsigned).
@@ -100,7 +57,7 @@ C provides fixed-width integer types through `<stdint.h>`. Here's a reference of
 These numbers are not arbitrary, they cover the range of possible decimal integers you can represent using their specified amount of bytes, let's do the math ourselves so we fully understand it.
 
 #### Take the `uint8_t`.
-As it name states, we have 8 bits to work with, let's bring up our trusty binary table:
+As its name states, we have 8 bits to work with, let's bring up our trusty binary table:
 
 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
 |-|-|-|-|-|-|-|
@@ -179,7 +136,71 @@ The enemies array memory footprint is 62.5kB, which might not sound like much, b
 By not knowing anything specific about our game we can't really make decisions about what to do to reduce memory usage, but, our imaginary game designer has stipulated that
 
 - Any unit's health falls between the range of 0 - 100, this can be suported fully by `int8_t` (-127, 127)
+- Given this previous information, the maximum amount of damage we can ever hope to deal is also within 0 and 100, we cover the two extreme cases of not dealing any damage at all, and potentially one-shotting the player, therefore, an `int8_t` should be sufficient here as well.
+- maxhealth is simply this entity's original health at creation, so, we mirror the health's type (`int8_t`).
 - Armor is a factor in a formula the designer came up with that feels pretty good `damageTaken = ((incomingDamage)/(1 + ((armor)/(5))))` (based on an actual implementation of armor in League of Legends). You graphed it and this is the result
 
 ... It basically plateus at about 180 armor, reducing the damage by about 97%, that no longer falls in the ranged of a signed 8 bit integer, but there's also no need to increase the bit size of our integer, just to get rid of the sign to go from a maximum of 127 to 255, which is more than enough to cover our most extreme case of super tanky enemies, so we turn this into a `uint8_t`.
+
+- Levels go from 1 to 18 (did you catch the LoL inspiration again?), the range of possible values is really small again, so, we'll just do another `int8_t`
+
+With this, our struct now looks like this:
+
+
+```c
+typedef struct Enemy {
+	Vector3 position; // 12
+	int8_t damage; // 12 + 1 = 13
+	int8_t health; // 13 + 1 = 14
+	int8_t maxHealth; // 14 + 1 = 15
+	uint8_t armor; // 15 + 1 = 16
+	int8_t level; // 16 + 1 = 17
+} Enemy;
+```
+Now, due to alignment rules, the compiler will insert extra padding bytes to make sure the struct's size falls to the next nearest power of 2, in this case it's **20**, even then, we reduced our memory footprint significantly; if we spawn the same 2000 enemies, we have `2000 * 20 = 40000 ~= 39.06kB`, **that's a reduction of about 37% of memory usage**, just by knowing what our data will be used for and optimizing for that scenario.
+
+  
+## Your first program (more than a "Hello World!")  
+With a compiler and debugger now installed on your system, we can start writing our first program.  
+```c
+#define RC_OK 0
+
+int main() {
+	printf("Hello There!");
+	return RC_OK;
+}
+
+```
+I know, I know, you've probably already written this code a million times before, but please allow me to try and convince you this time it'll be different, you see, I sneaked a tiny detail in that program, did you catch it?
+
+...
+
+That's right, the `#define RC_OK 0`, this is simply a constant definition for the program's return code, and here's where we can already start thinking differently about the code you write...
+  
+
+If you're not familiar with them, return / exit codes are simply integer values EVERY single program needs to return when completing their execution, it's a way to tell the OS "Hey, I'm done with my work, and everything went well" (if the code is 0), or "I stopped running and things were not ideal" (any other number), one might want to return any other number as a way to identify not only that there was an error during execution, but specifically which error that was:
+
+Imagine we're building an app that only users with valid credentials can use, we can do the following
+
+```c
+#define RC_OK 0
+#define RC_USER_NOT_FOUND 1
+#define RC_BAD_PASS 2
+
+int main() {
+
+	User u = GetUserFromInput();
+	if (!IsValidUser(u.name)) {
+		return RC_USER_NOT_FOUND;
+	}
+	if (!MatchesPass(u.name, u.password)) {
+		return RC_BAD_PASS;
+	}
+	return RC_OK;
+}
+```
+
+This approach to programming is called "errors as values", and I have a whole [article](https://computergoblin.com/blog/everyone-should-learn-c-pt-1/) going in-depth into how to integrate it into common programming paradigms.
+I won't go into too much detail about this particular technique because of the afore mentioned article, but I personally think exit codes are a great example of the power behind limitations, it forces you to get creative and find ways to make the most put of the least, and that right there, that's what systems programming is all about.
+
 
