@@ -1,5 +1,5 @@
 ---
-title: 'Learn systems programming as a web dev - Part #1: The humble integer'
+title: 'Learn systems programming as a web dev - Part #1: The humble integer vol1'
 date: 2026-09-12
 draft: true
 tags: ['opinion', 'c']
@@ -159,48 +159,29 @@ typedef struct Enemy {
 ```
 Now, due to alignment rules, the compiler will insert extra padding bytes to make sure the struct's size falls to the next nearest power of 2, in this case it's **20**, even then, we reduced our memory footprint significantly; if we spawn the same 2000 enemies, we have `2000 * 20 = 40000 ~= 39.06kB`, **that's a reduction of about 37% of memory usage**, just by knowing what our data will be used for and optimizing for that scenario.
 
-  
-## Your first program (more than a "Hello World!")  
-With a compiler and debugger now installed on your system, we can start writing our first program.  
-```c
-#define RC_OK 0
+This optimization encapsulates pretty well the mindset behind systems programming, data oriented approches, "To understand the problem is to understand the data, if you don't understand the data, you can't solve the problem".
 
-int main() {
-	printf("Hello There!");
-	return RC_OK;
-}
+## Encoding flags 
 
-```
-I know, I know, you've probably already written this code a million times before, but please allow me to try and convince you this time it'll be different, you see, I sneaked a tiny detail in that program, did you catch it?
+Now, let's look at another example that comes up in various types of applications, a role based access system, and we will check how the humble integer can help us make things simpler. I've seen approaches similar to this in many codebases:
 
-...
-
-That's right, the `#define RC_OK 0`, this is simply a constant definition for the program's return code, and here's where we can already start thinking differently about the code you write...
-  
-
-If you're not familiar with them, return / exit codes are simply integer values EVERY single program needs to return when completing their execution, it's a way to tell the OS "Hey, I'm done with my work, and everything went well" (if the code is 0), or "I stopped running and things were not ideal" (any other number), one might want to return any other number as a way to identify not only that there was an error during execution, but specifically which error that was:
-
-Imagine we're building an app that only users with valid credentials can use, we can do the following
-
-```c
-#define RC_OK 0
-#define RC_USER_NOT_FOUND 1
-#define RC_BAD_PASS 2
-
-int main() {
-
-	User u = GetUserFromInput();
-	if (!IsValidUser(u.name)) {
-		return RC_USER_NOT_FOUND;
-	}
-	if (!MatchesPass(u.name, u.password)) {
-		return RC_BAD_PASS;
-	}
-	return RC_OK;
+### Data from a DTO passed to a Database
+```json
+"user": {
+	"name": "Jon B",
+	"age": 25,
+	"admin": true,
+	"vendor": false,
+	"manager": true,
+	"storeOwner": false
 }
 ```
+At a glance this can look like a roboust way of handling permissions, after all, logic is gated behind these flags, it's not bad to be honest, but it is really, REALLY wasteful in many ways, it's not only what's in RAM when we create these users, but also the da
 
-This approach to programming is called "errors as values", and I have a whole [article](https://computergoblin.com/blog/everyone-should-learn-c-pt-1/) going in-depth into how to integrate it into common programming paradigms.
-I won't go into too much detail about this particular technique because of the afore mentioned article, but I personally think exit codes are a great example of the power behind limitations, it forces you to get creative and find ways to make the most put of the least, and that right there, that's what systems programming is all about.
-
-
+```c
+struct User {
+	char name[64] name;
+	bool isAdmin;
+	bool 
+}
+```
