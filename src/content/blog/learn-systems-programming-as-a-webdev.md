@@ -173,15 +173,38 @@ Now, let's look at another example that comes up in various types of application
 	"admin": true,
 	"vendor": false,
 	"manager": true,
-	"storeOwner": false
+	"storeOwner": false,
+	"districtManager": false,
+	"executive": false,
+	"stakeholder": false
 }
 ```
-At a glance this can look like a roboust way of handling permissions, after all, logic is gated behind these flags, it's not bad to be honest, but it is really, REALLY wasteful in many ways, it's not only what's in RAM when we create these users, but also the da
+At a glance this can look like a roboust way of handling permissions, after all, logic is gated behind these flags, it's not bad to be honest, but it is really, REALLY wasteful in many ways, it's not only what's in RAM when we create these users, but also in the response/request data over the network, and most importantly, in database itself, every record will have these fields which, at scale can really add up...
+
+Let's assume our user is represented by this struct.
 
 ```c
 struct User {
-	char name[64] name;
+	char name[64];
+	uint32_t age;
 	bool isAdmin;
-	bool 
+	bool isVendor;
+	bool isManager;
+	bool isStoreOwner;
+	bool isDistrictManager;
+	bool isExecutive;
+	bool isStakeHolder;
 }
 ```
+
+This comes to a size of 76 bytes per user, let's just talk about the user data itself, obviously any Database implementation will most likely add metadata on top of it causing way more overhead, assuming our DB holds the data for 100,000 users, that's about 7.24 MB of data in our hard drive.
+
+Now, let us introduce our next optimization:
+
+### BitFlags
+
+Bitflags are simple, yet powerful, they rely on the internal binary representation of numbers we just saw in [this section](#), if we mentally replace each slot in the binary table for a logic role of our app:
+
+| StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
+|-|-|-|-|-|-|-|
+| 0 | 0 | 0 | 0 | 0 | 0 | 0 |
