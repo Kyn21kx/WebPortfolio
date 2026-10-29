@@ -184,7 +184,7 @@ At a glance this can look like a roboust way of handling permissions, after all,
 Let's assume our user is represented by this struct.
 
 ```c
-struct User {
+typedef struct User {
 	char name[64];
 	uint32_t age;
 	bool isAdmin;
@@ -194,7 +194,7 @@ struct User {
 	bool isDistrictManager;
 	bool isExecutive;
 	bool isStakeHolder;
-}
+};
 ```
 
 This comes to a size of 76 bytes per user, let's just talk about the user data itself, obviously any Database implementation will most likely add metadata on top of it causing way more overhead, assuming our DB holds the data for 100,000 users, that's about 7.24 MB of data in our hard drive.
@@ -208,3 +208,47 @@ Bitflags are simple, yet powerful, they rely on the internal binary representati
 | StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
 |-|-|-|-|-|-|-|
 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+We can store each permission state as a single bit for the position of the associated role, so, for example, a district manager would just look like this:
+
+| StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
+|-|-|-|-|-|-|-|
+| 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+
+A StoreOwner that also happens to be a manager:
+
+| StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
+|-|-|-|-|-|-|-|
+| 0 | 0 | 0 | 1 | 1 | 0 | 0 |
+
+An executive that for some reason also sells us stuff as a vendor:
+
+| StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
+|-|-|-|-|-|-|-|
+| 0 | 1 | 0 | 0 | 0 | 1 | 0 |
+
+
+You get the idea, we can reduce the amount of information we transmit from 1 byte (8 bit booleans) per role to a single byte for all possible role combinations.
+
+Our user struct is now:
+
+```c
+enum ERole {
+  ERole_Admin = 1,
+  ERole_Vendor = 2,
+  ERole_Manager = 4,
+  ERole_StoreOwner = 8,
+  ERole_DistrictManager = 16,
+  ERole_Executive = 64,
+  ERole_StakeHolder = 128,
+};
+
+// This is just an alias for our enum to ensure it uses 8bit unsigned integers in our structs
+typedef uint8_t ERole_t;
+
+typedef struct User {
+  char name[64];
+  uint32_t age;
+  ERole_t roleFlags;
+};
+```
