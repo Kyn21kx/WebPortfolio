@@ -1,5 +1,5 @@
 ---
-title: 'Learn systems programming as a web dev - Part #1: The humble integer vol1'
+title: 'Learn systems programming as a web dev - Part #1: The humble integer'
 date: 2026-09-12
 draft: true
 tags: ['opinion', 'c']
@@ -12,7 +12,7 @@ author: 'Leónidas Neftalí González Campos'
 Talking to students and friends I think one of the most common things I see is people wanting to break free from the very narrow conception that they have of programming, but them not even knowing where to start. This is my intention with this series of articles, to not only provide a concrete path for those looking to expand to new fields, but also change people’s perspective on programming, once you think like a systems engineer, you can’t go back, these learnings will carry on to your next projects no matter the tech stack.  
   
 ## Choosing a language  
-There are many roads we can take from here, but it’s really important to emphasize something here, a language is nothing more than a tool, this is the same reason why the concepts you’ll see throughout this series is widely applicable to other languages.  
+There are many roads we can take from here, but it’s really important to emphasize something here, a language is nothing more than a tool, this is the same reason why the concepts you’ll see throughout this series are widely applicable to other languages.  
 Having said that, I’ll choose C for the concrete examples on this series, you can follow along in any of the other languages I’ll list below and I will do my best to provide equivalent function names and conventions as we go forward.  
 * Odin  
 * Zig  
@@ -140,7 +140,9 @@ By not knowing anything specific about our game we can't really make decisions a
 - maxhealth is simply this entity's original health at creation, so, we mirror the health's type (`int8_t`).
 - Armor is a factor in a formula the designer came up with that feels pretty good `damageTaken = ((incomingDamage)/(1 + ((armor)/(5))))` (based on an actual implementation of armor in League of Legends). You graphed it and this is the result
 
-... It basically plateus at about 180 armor, reducing the damage by about 97%, that no longer falls in the ranged of a signed 8 bit integer, but there's also no need to increase the bit size of our integer, just to get rid of the sign to go from a maximum of 127 to 255, which is more than enough to cover our most extreme case of super tanky enemies, so we turn this into a `uint8_t`.
+[!armorGraph](https://private-user-images.githubusercontent.com/25380184/689747590-da3f20fb-75b2-4ebc-9c6c-c486218bfbaf.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3OTMzMzg5ODAsIm5iZiI6MTc5MzMzODY4MCwicGF0aCI6Ii8yNTM4MDE4NC82ODk3NDc1OTAtZGEzZjIwZmItNzViMi00ZWJjLTljNmMtYzQ4NjIxOGJmYmFmLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjEwMzAlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYxMDMwVDA1MzgwMFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTk0Mzg1YzZlZmVlMmQyNGJmODA3OWRlODk2MWVmYjJjNDcxMDdlNjM4ODkwMmEzYzFlNzI2MzNlMGI5YmQ2YTQmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JnJlc3BvbnNlLWNvbnRlbnQtdHlwZT1pbWFnZSUyRnBuZyJ9.3gGYwLhbEebhn5RKMgBJ6v4gOISPF_0iyNGe1U0FLZU)
+
+... It basically plateus at about 180 armor, reducing the damage by about 97%, that no longer falls in the range of a signed 8 bit integer, but there's also no need to increase the bit size of our integer, just to get rid of the sign to go from a maximum of 127 to 255, which is more than enough to cover our most extreme case of super tanky enemies, so we turn this into a `uint8_t`.
 
 - Levels go from 1 to 18 (did you catch the LoL inspiration again?), the range of possible values is really small again, so, we'll just do another `int8_t`
 
@@ -186,7 +188,7 @@ Let's assume our user is represented by this struct.
 ```c
 typedef struct User {
 	char name[64];
-	uint32_t age;
+	uint8_t age;
 	bool isAdmin;
 	bool isVendor;
 	bool isManager;
@@ -197,7 +199,7 @@ typedef struct User {
 };
 ```
 
-This comes to a size of 76 bytes per user, let's just talk about the user data itself, obviously any Database implementation will most likely add metadata on top of it causing way more overhead, assuming our DB holds the data for 100,000 users, that's about 7.24 MB of data in our hard drive.
+This comes to a size of 72 bytes per user, let's just talk about the user data itself, obviously any Database implementation will most likely add metadata on top of it causing way more overhead, assuming our DB holds the data for 100,000 users, that's about 6.87 MB of data in our hard drive.
 
 Now, let us introduce our next optimization:
 
@@ -234,6 +236,7 @@ Our user struct is now:
 
 ```c
 enum ERole {
+  ERole_None = 0,
   ERole_Admin = 1,
   ERole_Vendor = 2,
   ERole_Manager = 4,
@@ -248,7 +251,41 @@ typedef uint8_t ERole_t;
 
 typedef struct User {
   char name[64];
-  uint32_t age;
+  uint8_t age;
   ERole_t roleFlags;
 };
 ```
+
+We reduced the size of each user to just 66 bytes, which, for 100k instances we'd get 6.29MB, a reduction of about 10% memory usage, this seems small for the web world where we tend to measure in Megabytes and upwards, but if you're reading this because you aim to be an embedded systems engineer, that 10% might be the difference between your program's runtime fitting on the hardware or not.
+
+### With this optimization, our operations become:
+```c
+void AddRole(User* user, ERole_t role) {
+  user.roleFlags |= role;
+}
+
+void RemoveRole(User* user, ERole_t role) {
+  user.roleFlags ~= role;
+}
+
+// NOTE: You'll need stdbool.h for boolean types in C
+bool HasRoleFlag(const User* user, ERole_t role) {
+  return (user.roleFlags & role) != 0;
+}
+
+```
+
+### Simple API example:
+
+```c
+void PromoteToManager(User* user) {
+  if (HasRoleFlag(user, ERole_Manager)) {
+    // User is already a manager, nothing to do!
+    return;
+  }
+  AddRole(user, ERole_Manager);
+}
+```
+
+So, a very simple layer of abstraction makes it look like very high-level code, this is another one of my goals with the series, for everyone to understand that you don't have to sacrifice readability to make good, performant and elegant code with fewer resources, it just forces you to get creative about how you use your data.
+
