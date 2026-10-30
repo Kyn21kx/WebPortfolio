@@ -59,37 +59,39 @@ These numbers are not arbitrary, they cover the range of possible decimal intege
 #### Take the `uint8_t`.
 As its name states, we have 8 bits to work with, let's bring up our trusty binary table:
 
-| 64 | 32 | 16 | 8 | 4 | 2 | 1 |
-|-|-|-|-|-|-|-|
-| 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+|--|-|-|-|-|-|-|-|
+| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 If we decide to turn on any one of those bytes, we add the value above the slot.
 
-| 64 | 32 | 16 | 8 | 4 | 2 | 1 |
-|-|-|-|-|-|-|-|
-| 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+
+| 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+|--|-|-|-|-|-|-|-|
+| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 
 Becomes => 1
 
-| 64 | 32 | 16 | 8 | 4 | 2 | 1 |
-|-|-|-|-|-|-|-|
-| 0 | 0 | 0 | 0 | 1 | 0 | 1 |
+
+| 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+|--|-|-|-|-|-|-|-|
+| 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1 |
 
 Becomes => 5
 
 The maximum number we can represent if we turn on ALL the slots:
 
-| 64 | 32 | 16 | 8 | 4 | 2 | 1 |
-|-|-|-|-|-|-|-|
-| 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+| 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+|--|-|-|-|-|-|-|-|
+| 1  | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
 
-64 + 32 + 16 + 8 + 4 + 2 + 1 = 255
+128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255
 
 This, of course only covers positive numbers, that's what the `u` in `uint8_t` stands for: `unsigned`, if we want to represent negative numbers with the same amount of bytes, we need to apply something called [Two's complement](https://en.wikipedia.org/wiki/Two%27s_complement), we won't really get into that right now, but TLDR; it cuts the representable numbers in half (and one extra position for +0 and -0 respectively).
 
 #### Number limits
 
-For any number of bits (N) in an integer variable, we can quickly find out the limits by doing `MAX_NUM = 2^N` if the type is unsigned, and `MAX_NUM = [(2^N) / 2] - 1` if it's signed
+For any number of bits (N) in an integer variable, we can quickly find out the limits by doing `MAX_NUM = (2^N) - 1` if the type is unsigned, and `MAX_NUM = [(2^N) / 2] - 1` if it's signed
 
 ### Optimizing with integers (understand the problem to understand the data)
 
@@ -140,7 +142,7 @@ By not knowing anything specific about our game we can't really make decisions a
 - maxhealth is simply this entity's original health at creation, so, we mirror the health's type (`int8_t`).
 - Armor is a factor in a formula the designer came up with that feels pretty good `damageTaken = ((incomingDamage)/(1 + ((armor)/(5))))` (based on an actual implementation of armor in League of Legends). You graphed it and this is the result
 
-![armorGraph](https://private-user-images.githubusercontent.com/25380184/689747590-da3f20fb-75b2-4ebc-9c6c-c486218bfbaf.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3OTMzMzg5ODAsIm5iZiI6MTc5MzMzODY4MCwicGF0aCI6Ii8yNTM4MDE4NC82ODk3NDc1OTAtZGEzZjIwZmItNzViMi00ZWJjLTljNmMtYzQ4NjIxOGJmYmFmLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjEwMzAlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYxMDMwVDA1MzgwMFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTk0Mzg1YzZlZmVlMmQyNGJmODA3OWRlODk2MWVmYjJjNDcxMDdlNjM4ODkwMmEzYzFlNzI2MzNlMGI5YmQ2YTQmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JnJlc3BvbnNlLWNvbnRlbnQtdHlwZT1pbWFnZSUyRnBuZyJ9.3gGYwLhbEebhn5RKMgBJ6v4gOISPF_0iyNGe1U0FLZU)
+<img src="https://private-user-images.githubusercontent.com/25380184/689747590-da3f20fb-75b2-4ebc-9c6c-c486218bfbaf.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3OTMzNDAxODIsIm5iZiI6MTc5MzMzOTg4MiwicGF0aCI6Ii8yNTM4MDE4NC82ODk3NDc1OTAtZGEzZjIwZmItNzViMi00ZWJjLTljNmMtYzQ4NjIxOGJmYmFmLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjEwMzAlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYxMDMwVDA1NTgwMlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWRhMDZjNzk4ZWQ4MzNmMjU1OGU2ZTkyMzMyZjQ5NDhlMGE0NzJjZTA2MGRlODZkOGM0N2U4MjNmY2I2NjdmZmImWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JnJlc3BvbnNlLWNvbnRlbnQtdHlwZT1pbWFnZSUyRnBuZyJ9.NKSxRnx4yBzd5LI9UJ0bjwF4NCkb9fszhFrqP4NiVC0" alt="armorGraph">
 
 ... It basically plateus at about 180 armor, reducing the damage by about 97%, that no longer falls in the range of a signed 8 bit integer, but there's also no need to increase the bit size of our integer, just to get rid of the sign to go from a maximum of 127 to 255, which is more than enough to cover our most extreme case of super tanky enemies, so we turn this into a `uint8_t`.
 
@@ -159,7 +161,7 @@ typedef struct Enemy {
 	int8_t level; // 16 + 1 = 17
 } Enemy;
 ```
-Now, due to alignment rules, the compiler will insert extra padding bytes to make sure the struct's size falls to the next nearest power of 2, in this case it's **20**, even then, we reduced our memory footprint significantly; if we spawn the same 2000 enemies, we have `2000 * 20 = 40000 ~= 39.06kB`, **that's a reduction of about 37% of memory usage**, just by knowing what our data will be used for and optimizing for that scenario.
+Now, due to alignment rules, the compiler will insert padding bytes so that the struct’s size becomes a multiple of its alignment requirement (in this case, **20**), even then, we reduced our memory footprint significantly; if we spawn the same 2000 enemies, we have `2000 * 20 = 40000 ~= 39.06kB`, **that's a reduction of about 37% of memory usage**, just by knowing what our data will be used for and optimizing for that scenario.
 
 This optimization encapsulates pretty well the mindset behind systems programming, data oriented approches, "To understand the problem is to understand the data, if you don't understand the data, you can't solve the problem".
 
@@ -181,7 +183,7 @@ Now, let's look at another example that comes up in various types of application
 	"stakeholder": false
 }
 ```
-At a glance this can look like a roboust way of handling permissions, after all, logic is gated behind these flags, it's not bad to be honest, but it is really, REALLY wasteful in many ways, it's not only what's in RAM when we create these users, but also in the response/request data over the network, and most importantly, in database itself, every record will have these fields which, at scale can really add up...
+At a glance this can look like a robust way of handling permissions, after all, logic is gated behind these flags, it's not bad to be honest, but it is really, REALLY wasteful in many ways, it's not only what's in RAM when we create these users, but also in the response/request data over the network, and most importantly, in database itself, every record will have these fields which, at scale can really add up...
 
 Let's assume our user is represented by this struct.
 
@@ -196,7 +198,7 @@ typedef struct User {
 	bool isDistrictManager;
 	bool isExecutive;
 	bool isStakeHolder;
-};
+} User;
 ```
 
 This comes to a size of 72 bytes per user, let's just talk about the user data itself, obviously any Database implementation will most likely add metadata on top of it causing way more overhead, assuming our DB holds the data for 100,000 users, that's about 6.87 MB of data in our hard drive.
@@ -207,27 +209,29 @@ Now, let us introduce our next optimization:
 
 Bitflags are simple, yet powerful, they rely on the internal binary representation of numbers we just saw in [this section](#), if we mentally replace each slot in the binary table for a logic role of our app:
 
-| StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
-|-|-|-|-|-|-|-|
-| 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| - | StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
+|-|-|-|-|-|-|-|-|
+| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 We can store each permission state as a single bit for the position of the associated role, so, for example, a district manager would just look like this:
 
-| StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
-|-|-|-|-|-|-|-|
-| 0 | 0 | 1 | 0 | 0 | 0 | 0 |
+| - | StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
+|-|-|-|-|-|-|-|-|
+| 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 |
 
 A StoreOwner that also happens to be a manager:
 
-| StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
-|-|-|-|-|-|-|-|
-| 0 | 0 | 0 | 1 | 1 | 0 | 0 |
+
+| - | StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
+|-|-|-|-|-|-|-|-|
+| 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 |
 
 An executive that for some reason also sells us stuff as a vendor:
 
-| StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
-|-|-|-|-|-|-|-|
-| 0 | 1 | 0 | 0 | 0 | 1 | 0 |
+
+| - | StakeHolder | Executive | DistrictManager | StoreOwner | Manager | Vendor | Admin |
+|-|-|-|-|-|-|-|-|
+| 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 |
 
 
 You get the idea, we can reduce the amount of information we transmit from 1 byte (8 bit booleans) per role to a single byte for all possible role combinations.
@@ -242,8 +246,8 @@ enum ERole {
   ERole_Manager = 4,
   ERole_StoreOwner = 8,
   ERole_DistrictManager = 16,
-  ERole_Executive = 64,
-  ERole_StakeHolder = 128,
+  ERole_Executive = 32,
+  ERole_StakeHolder = 64,
 };
 
 // This is just an alias for our enum to ensure it uses 8bit unsigned integers in our structs
@@ -253,7 +257,7 @@ typedef struct User {
   char name[64];
   uint8_t age;
   ERole_t roleFlags;
-};
+} User;
 ```
 
 We reduced the size of each user to just 66 bytes, which, for 100k instances we'd get 6.29MB, a reduction of about 10% memory usage, this seems small for the web world where we tend to measure in Megabytes and upwards, but if you're reading this because you aim to be an embedded systems engineer, that 10% might be the difference between your program's runtime fitting on the hardware or not.
@@ -265,7 +269,7 @@ void AddRole(User* user, ERole_t role) {
 }
 
 void RemoveRole(User* user, ERole_t role) {
-  user.roleFlags ~= role;
+  user.roleFlags &= ~role;
 }
 
 // NOTE: You'll need stdbool.h for boolean types in C
